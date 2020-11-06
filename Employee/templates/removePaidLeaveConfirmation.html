@@ -1,0 +1,30 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Paid Leave Removal Confirmation
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+{% for paidleave in paidleave %}
+<p>Are you sure want to delete <b>{{paidleave.title}}</b> ?</p>
+{% endfor %}
+<form method="post">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" name="confirmRemove">
+
+    {% if request.user.username == "admin" %}
+    <a class="btn btn-danger" href="{% url "employee:indexPaidLeave" %}">Cancel</a>
+    {% else %}
+    <a class="btn btn-danger" href="{% url "employee:userPaidLeave" %}">Cancel</a>
+    {% endif %}
+
+
+</form>
+{% endblock contents %}

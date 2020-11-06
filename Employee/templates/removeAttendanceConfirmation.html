@@ -1,0 +1,26 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Attendance Removal Confirmation
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+{% for attendance in attendance %}
+<p>Are you sure want to remove <b>{{attendance.user.profile_user.first_name}}
+        {{attendance.user.profile_user.last_name}}'s
+    </b> Attendance on <b>{{attendance.clock_in}}</b> ?
+</p>
+{% endfor %}
+<form method="post">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" name="confirmRemove">
+    <a class="btn btn-danger" href="{% url "employee:indexAttendance" %}">Cancel</a>
+</form>
+{% endblock contents %}

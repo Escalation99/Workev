@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+{{paidleave.title}}
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<a class="btn btn-primary" href="{% url "employee:indexPaidLeave" %}">Back to Paid Leave List</a>
+<br><br>
+<h2>{{paidleave.title}}</h2>
+<br>
+
+<div class="media border rounded" style="padding:20px">
+    <img src="" class="mr-3">
+    <div class="media-body">
+        <p><b>Requested By: </b>{{paidleave.created_by}}</p>
+        <p><b>Title: </b>{{paidleave.title}}</p>
+        <hr>
+        <p><b>Description: </b>{{paidleave.body}}</p>
+        {% if paidleave.attachment %}
+        <p><a href="{{paidleave.attachment.url}}">Download Attachment</a></p>
+        {% endif %}
+        <hr>
+        <p><b>Created at: {{paidleave.created_at}}</b></p>
+
+    </div>
+</div>
+
+
+{% endblock contents %}

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+My Task List
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}
+{% endblock navbar %}
+
+{% block contents %}
+<h2>My Tasks</h2>
+<br>
+
+
+<div class="row">
+    <div class="col">
+        <div class="card card-body">
+            <h4>Filter By:</h4>
+            <form method="get">
+                {{myFilter.form}}
+                <button class="btn btn-primary" type="submit">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+
+
+{% if task_qty == 0 %}
+<h4 class="text-danger">You have no task for now :)</h4>
+<h4 class="text-danger">Please ask for a new task from your supervisor..</h4>
+{% else %}
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Given By</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Attachment</th>
+            <th scope="col">Status</th>
+            <th scope="col">Deadline</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for task in task %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td><a href="{% url "employee:detailTask" task.id %}">{{task.title}}</a></td>
+            <td>{{task.created_by}}</td>
+            <td>{{task.created_at.date}}</td>
+            {% if task.attachment %}
+            <td><a href="{{task.attachment.url}}">Download</a></td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+
+            {% if task.status == "new" or task.status == "Rejected" %}
+            <td class="text-danger">{{task.status}}</td>
+            {% elif task.status == "On Progress" %}
+            <td class="text-primary">{{task.status}}</td>
+            {% elif task.status == "Waiting Approval" %}
+            <td class="text-warning">{{task.status}}</td>
+            {% elif task.status == "Approved" %}
+            <td class="text-success">{{task.status}}</td>
+            {% endif %}
+
+            <td>{{task.deadline}}</td>
+
+            {% if task.status == "new" %}
+            <td><a href="{% url "employee:acceptTask" task.id %}" class="btn btn-primary btn-sm">Accept Task</a></td>
+            {% elif task.status == "Rejected" %}
+            <td>
+                <a href="{% url "employee:acceptTask" task.id %}" class="btn btn-warning btn-sm">Reattempt</a>
+                <a href="{% url "employee:showFeedback" task.id %}" class="btn btn-primary btn-sm">Show Feedback</a>
+            </td>
+            {% elif task.status == "On Progress" %}
+
+            <td>
+                <a href="{% url "employee:submitTask" task.id %}" class="btn btn-outline-success btn-sm">Finish Task</a>
+            </td>
+
+
+            {% elif task.status == "Waiting Approval" %}
+            <td><a href="#" class="btn btn-warning btn-sm disabled">Waiting Approval</a></td>
+            {% elif task.status == "Approved" %}
+            <td>-</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<ul class="pagination">
+    {% if task.has_previous %}
+    <li class="page-item">
+        <a href="?page={{task.previous_page_number}}" class="page-link">&laquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo</a>
+    </li>
+    {% endif %}
+
+    {% for p in task.paginator.page_range %}
+    {% if task.number == p %}
+    <li class="page-item active">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if task.has_next %}
+    <li class="page-item">
+        <a href="?page={{task.next_page_number}}" class="page-link">&raquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&raquo</a>
+    </li>
+    {% endif %}
+</ul>
+{% endif %}
+
+
+
+
+
+{% endblock contents %}

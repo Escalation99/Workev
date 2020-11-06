@@ -1,0 +1,63 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Profile Page
+{% endblock page_title %}
+
+{% block navbar %}
+
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}
+
+{% endblock navbar %}
+
+{% block contents %}
+
+<div class="media border" style="padding:25px;border-radius:25px;">
+    <img height="128px" width="128px" src="{{user.profile_user.profile_pic.url}}" class="mr-3"
+        style="border-radius:25px;">
+    <div class="media-body">
+        <h5 class="mt-0">{{user.profile_user.first_name}} {{user.profile_user.last_name}} |
+            {{user.profile_user.position}}</h5>
+        <hr>
+        <p><b>Email:</b> {{user.profile_user.email}}</p>
+        <p><b>Address:</b> {{user.profile_user.address}}</p>
+        <!-- <p>Salary: {{user.profile_user.salary}} / month</p> -->
+        <p><b>Employee Since: {{user.profile_user.employeeSince}}</b></p>
+    </div>
+    <a href="{% url "profile:changePassword" %}" class="btn btn-danger mr-3"><i class="fa fa-key"
+            aria-hidden="true"></i>
+        Change Password</a>
+    <a href="{% url "profile:updateProfile" %}" class="btn btn-primary"><i class="fa fa-user" aria-hidden="true"></i>
+
+        Edit my Profile</a>
+</div>
+
+<br><br>
+<div class="container d-flex justify-content-around">
+    <div class="card text-center bg-light shadow-sm p-3 mb-5 border mr-3" style="width: 18rem;border-radius:25px;">
+        <div class="card-body">
+            <h5 class="card-title">Discussion Post</h5>
+            <hr>
+            <p class="card-text">{{post_qty}}</p>
+        </div>
+    </div>
+    <div class="card text-center bg-light shadow-sm p-3 mb-5 border mr-3" style="width: 18rem;border-radius:25px;">
+        <div class="card-body">
+            <h5 class="card-title">Finished Task</h5>
+            <hr>
+            <p class="card-text">{{finishedTask_qty}}</p>
+        </div>
+    </div>
+    <div class="card text-center bg-light shadow-sm p-3 mb-5 border mr-3" style="width: 18rem;border-radius:25px;">
+        <div class="card-body">
+            <h5 class="card-title">Meetings Hosted</h5>
+            <hr>
+            <p class="card-text">{{meeting_qty}}</p>
+        </div>
+    </div>
+
+    {% endblock contents %}

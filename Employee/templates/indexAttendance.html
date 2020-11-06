@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+Employee Attendance
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}
+{% endblock navbar %}
+
+{% block contents %}
+<h2>Employee Attendance</h2>
+<hr>
+<h5>Current Time: {{time}}</h5>
+<br>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Full Name</th>
+            <th scope="col">Status</th>
+            <th scope="col">Attendance Date</th>
+            <th scope="col">In Time</th>
+            <th scope="col">Out Time</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for attendance in attendance %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{attendance.user.profile_user.first_name}} {{attendance.user.profile_user.last_name}}</td>
+
+            {% if attendance.status == "Present" %}
+            <td class="text-success">{{attendance.status}}</td>
+            {% elif attendance.status == "Absent" %}
+            <td class="text-danger">{{attendance.status}}</td>
+            {% elif attendance.status == "Finished" %}
+            <td class="text-warning">{{attendance.status}}</td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+
+            {% if attendance.clock_in %}
+            <td>{{attendance.clock_in.date}}</td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+
+            {% if attendance.clock_in %}
+            <td>{{attendance.clock_in.time}}</td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+
+            {% if attendance.status == "Present" %}
+            <td>-</td>
+            {% else %}
+            <td>{{attendance.clock_out.time}}</td>
+            {% endif %}
+
+
+            {% if attendance.status == "Present" %}
+            <td>
+                <a href="{% url "employee:deleteAttendance" attendance.id %}" class="btn btn-danger">Delete</a>
+            </td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+
+    </tbody>
+</table>
+
+<ul class="pagination">
+    {% if attendance.has_previous %}
+    <li class="page-item">
+        <a href="?page={{attendance.previous_page_number}}" class="page-link">&laquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo</a>
+    </li>
+    {% endif %}
+
+    {% for p in attendance.paginator.page_range %}
+    {% if attendance.number == p %}
+    <li class="page-item active">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if attendance.has_next %}
+    <li class="page-item">
+        <a href="?page={{attendance.next_page_number}}" class="page-link">&raquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&raquo</a>
+    </li>
+    {% endif %}
+</ul>
+{% endblock contents %}

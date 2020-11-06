@@ -1,0 +1,41 @@
+{% extends "base.html"%}
+{% load static %}
+
+{% block page_title %}
+Login Page
+{% endblock page_title %}
+
+{% block navbar %}
+{%include "snippets/navbar_anonymous.html"%}
+{% endblock navbar %}
+
+{% block contents %}
+<link rel="stylesheet" href="{% static "loginForm.css" %}">
+<div class="row">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+            <div class="card-body">
+                <h5 class="card-title text-center">Login</h5>
+
+
+                <form class="form-signin" method="post">
+                    {% csrf_token %}
+                    <div class="form-label-group">
+                        <input type="text" id="username" class="form-control" placeholder="Username" name="username"
+                            required autofocus>
+                    </div>
+                    <br>
+                    <div class="form-label-group">
+                        <input type="password" id="password" class="form-control" placeholder="Password" name="password"
+                            required>
+                    </div>
+                    <br>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contents %}

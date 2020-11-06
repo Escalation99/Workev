@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+My Paid Leave
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}
+{% endblock navbar %}
+
+{% block contents %}
+<h2>My Paid Leave</h2>
+<br>
+{% if paidleave_qty == 0 %}
+<h4 class="text-danger">You have no paid leave for now :)</h4>
+{% else %}
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Requested By</th>
+            <th scope="col">Attachment</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for paidleave in paidleave %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td><a href="{% url "employee:detailPaidLeave" paidleave.id %}">{{paidleave.title}}</a></td>
+            <td>{{paidleave.created_by}}</td>
+            {% if paidleave.attachment %}
+            <td><a href="{{paidleave.attachment.url}}">Download</a></td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+            <td>{{paidleave.created_at.date}}</td>
+
+            {% if paidleave.status == "Pending" %}
+            <td class="text-warning">{{paidleave.status}}</td>
+            {% elif paidleave.status == "Confirmed" %}
+            <td class="text-success">{{paidleave.status}}</td>
+            {% elif paidleave.status == "Rejected" %}
+            <td class="text-danger">{{paidleave.status}}</td>
+            {% endif %}
+            <td>
+                <a href="{% url "employee:deletePaidLeave" paidleave.id %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<ul class="pagination">
+    {% if paidleave.has_previous %}
+    <li class="page-item">
+        <a href="?page={{paidleave.previous_page_number}}" class="page-link">&laquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo</a>
+    </li>
+    {% endif %}
+
+    {% for p in paidleave.paginator.page_range %}
+    {% if paidleave.number == p %}
+    <li class="page-item active">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if paidleave.has_next %}
+    <li class="page-item">
+        <a href="?page={{paidleave.next_page_number}}" class="page-link">&raquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&raquo</a>
+    </li>
+    {% endif %}
+</ul>
+{% endif %}
+{% endblock contents %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+{{post.title}}
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<h4>
+    <a class="btn btn-primary" href="{% url "discussion:index" %}">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        Back to Discussion</a> <br>
+</h4>
+<br>
+<h2>{{post.title}}</h2>
+<br>
+
+<div class="media border" style="padding:20px;border-radius:25px;">
+    <img height="100px" width="100px" src="{{post.created_by.profile_user.profile_pic.url}}" class="mr-3" alt="..."
+        style="border-radius:25px;">
+    <div class="media-body">
+        <h4 class="mt-0">{{post.created_by}}</h4>
+        <p>{{post.body}}</p>
+        <p><b>Created at: {{post.created_at}}</b></p>
+
+        {% if post.attachment %}
+        <p><a href="{{post.attachment.url}}">Download Attachment</a></p>
+        {% endif %}
+
+        <hr>
+
+        {% for replies in replies %}
+        <div class="media mt-3">
+            <a class="mr-3" href="">
+                <img height="100px" width="100px" src="{{replies.created_by.profile_user.profile_pic.url}}" class="mr-3"
+                    alt="..." style="border-radius:25px;">
+            </a>
+            <div class="media-body">
+                <h4 class="mt-0">{{replies.created_by}}</h4>
+                <p>{{replies.body}}</p>
+
+                {% if replies.attachment %}
+                <p><a href="{{replies.attachment.url}}">Download Attachment</a></p>
+                {% endif %}
+
+                <p><b>Replied at: {{replies.created_at}}</b></p>
+            </div>
+
+            {% if replies.created_by == request.user %}
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                data-target="#exampleModalCenter{{replies.id}}">
+                X
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalCenter{{replies.id}}" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to delete your reply?
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <a class="btn btn-danger" href="{% url "discussion:deleteReplies" replies.id %}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+
+        </div>
+        <hr>
+        {% endfor %}
+        <br>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.body}}
+            <br>
+            {{form.attachment}}
+            <br>
+            <br>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+        <br><br><br><br>
+    </div>
+</div>
+
+
+{% endblock contents %}

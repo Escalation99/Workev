@@ -1,0 +1,23 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+User Attendance: Clock In
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<h2>Clock In</h2>
+<p>Your work starts at:<b> {{time.date}} 8.00 a.m.</b></p>
+<p>Your clock in time: <b> {{time}}</b></p>
+<form method="post">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" name="clockIn">
+    <a class="btn btn-danger" href="{% url "index" %}">Cancel</a>
+</form>
+{% endblock contents %}

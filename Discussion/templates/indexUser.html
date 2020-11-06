@@ -1,0 +1,102 @@
+{%extends "base.html"%}
+{% load static %}
+
+
+{% block page_title %}
+Discussion Page
+{% endblock page_title %}
+
+{% block navbar %}
+
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}
+
+{% endblock navbar %}
+
+{% block contents %}
+<h2>Your Discussion List</h2>
+<hr>
+
+<ul class="pagination">
+    {% if post.has_previous %}
+    <li class="page-item">
+        <a href="?page={{post.previous_page_number}}" class="page-link">&laquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo</a>
+    </li>
+    {% endif %}
+
+    {% for p in post.paginator.page_range %}
+    {% if post.number == p %}
+    <li class="page-item active">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if post.has_next %}
+    <li class="page-item">
+        <a href="?page={{post.next_page_number}}" class="page-link">&raquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&raquo</a>
+    </li>
+    {% endif %}
+</ul>
+
+{% for post in post|dictsortreversed:"created_at" %}
+<div class="media bg-white p-3 mb-3 shadow-sm border" style="border-radius:25px;">
+    <img height="100px" width="100px" src="{{post.created_by.profile_user.profile_pic.url}}" class="mr-3" alt="..."
+        style="border-radius:25px;">
+    <div class="media-body">
+        <h4 class="mt-0"><a href="{% url "discussion:detailUser" post.id %}">{{post.title}}</a> - {{post.category}}
+        </h4>
+        <p>{{post.body|truncatechars:150}}</p>
+        <p><b>Posted by:</b> {{post.created_by}} on {{post.created_at}}</p>
+    </div>
+    <a href="{% url "discussion:editDiscussion" post.id %}" class="btn btn-warning btn-sm mr-1">Edit</a>
+    <!-- <a href="{% url "discussion:deleteDiscussion" post.id %}" class="btn btn-danger btn-sm">Delete</a> -->
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+        data-target="#exampleModalCenter{{post.id}}">
+        Delete
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter{{post.id}}" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to delete
+                        <b>{{post.title}} </b>?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" href="{% url "discussion:deleteDiscussion" post.id %}">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+{% endfor %}
+<br><br><br><br>
+
+{% endblock contents %}

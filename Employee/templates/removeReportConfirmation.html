@@ -1,0 +1,23 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Report Removal Confirmation
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+{% for report in report %}
+<p>Are you sure want to remove <b>{{report.created_by}}'s</b> report of <b>{{report.task.title}}</b> ? </p>
+{% endfor %}
+<form method="post">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" name="confirmRemove">
+    <a class="btn btn-danger" href="{% url "employee:indexReport" %}">Cancel</a>
+</form>
+{% endblock contents %}

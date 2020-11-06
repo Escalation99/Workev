@@ -1,0 +1,83 @@
+<nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="">
+            <img src="https://www.pastepic.xyz/images/2020/05/15/WorkevAdminLogo16722de3621543a9.png"
+                alt="WorkevAdminLogo16722de3621543a9.png" border="0" height="55px" />
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="{% url "index" %}" class="nav-link">Home</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Task</a>
+                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                        <a href="{% url "employee:indexTask" %}" class="dropdown-item bg-dark"
+                            style="color:white">Manage Task</a>
+                        <a href="{% url "employee:indexReport" %}" class="dropdown-item bg-dark"
+                            style="color:white">Task Report</a>
+                    </div>
+                </li>
+
+                <!-- <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Manage</a>
+                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                        <a href="{% url "employee:indexSalary" %}" class="dropdown-item bg-dark"
+                            style="color:white">Salary</a>
+                        <a href="{% url "employee:indexMeeting" %}" class="dropdown-item bg-dark"
+                            style="color:white">Meetings</a>
+                        <a href="{% url "employee:indexAttendance" %}" class="dropdown-item bg-dark"
+                            style="color:white">Attendance</a>
+                        <a href="{% url "employee:indexPaidLeave" %}" class="dropdown-item bg-dark"
+                            style="color:white">Paid Leave</a>
+                        <a href="{% url "employee:index" %}" class="dropdown-item bg-dark" style="color:red">REMOVAL</a>
+                    </div>
+                </li> -->
+
+                <li class="nav-item">
+                    <a href="{% url "employee:indexMeeting" %}" class="nav-link">Meetings</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Discussion</a>
+                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                        <a href="{% url "discussion:addDiscussion" %}" class="dropdown-item bg-dark"
+                            style="color:white">Create
+                            New</a>
+                        <a href="{% url "discussion:index" %}" class="dropdown-item bg-dark" style="color:white">All
+                            Discussions</a>
+                        <a href="{% url "discussion:indexUser" %}" class="dropdown-item bg-dark" style="color:white">My
+                            Discussions</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url "employee:indexAppFeedback" %}" class="nav-link">Feedback</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img style="height:25px;width:25px;background-color:white; border-radius:50%;margin-right:5px;"
+                            src="{{request.user.profile_user.profile_pic.url}}" alt=""></a>
+                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                        <a href="{% url "profile:index" %}" class="dropdown-item bg-dark" style="color:white">
+                            <i class="fa fa-user mr-2" aria-hidden="true"></i>
+                            Profile</a>
+                        <a href="{% url "logout" %}" class="dropdown-item bg-dark" style="color:white">
+                            <i class="fa fa-power-off mr-2" aria-hidden="true"></i>
+                            Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

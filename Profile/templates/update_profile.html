@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+Edit Profile
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for form in form %}
+    <div class="form-group">
+        {{form.label}}
+        {{form}}
+    </div>
+    {% endfor %}
+    <button class="btn btn-primary" type="submit">Submit</button>
+    <a href="{% url "profile:index" %}" class="btn btn-danger">Cancel</a>
+</form>
+
+{% endblock contents %}

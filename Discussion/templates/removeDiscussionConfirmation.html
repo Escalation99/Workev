@@ -1,0 +1,23 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Post Removal Confirmation
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+{% for post in post %}
+<p>Are you sure want to remove <b>{{post.title}}</b> ?</p>
+{% endfor %}
+<form method="post">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" name="confirmRemove">
+    <a href="{% url "discussion:indexUser" %}" class="btn btn-danger">Cancel</a>
+</form>
+{% endblock contents %}

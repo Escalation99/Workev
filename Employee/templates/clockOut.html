@@ -1,0 +1,23 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+User Attendance: Clock Out
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<h2>Clock Out</h2>
+<p>Your work ends at:<b> {{time.date}} 5.00 p.m.</b></p>
+<p>Your clock out time: <b> {{time}}</b></p>
+<form method="post">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" name="clockOut">
+    <a class="btn btn-danger" href="{% url "index" %}">Cancel</a>
+</form>
+{% endblock contents %}

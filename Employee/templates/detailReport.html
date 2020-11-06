@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+{{task.title}}
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<h4>
+    <a class="btn btn-primary" href="{% url "employee:indexReport" %}">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        Back to Report List</a>
+    <br>
+</h4>
+<br>
+<h2>Report on task: {{report.task.title}}</h2>
+<br>
+
+<div class="media border rounded" style="padding:20px">
+    <img src="" class="mr-3">
+    <div class="media-body">
+        <p><b>Report By: </b>{{report.created_by}}</p>
+        <p><b>Sent For: </b>{{report.given_to}}</p>
+        <hr>
+        <p><b>Description: </b>{{report.comments}}</p>
+        {% if report.attachment %}
+        <p><a href="{{report.attachment.url}}">Download Attachment</a></p>
+        {% endif %}
+        <hr>
+        <p><b>Created at: {{report.sent_at}}</b></p>
+
+    </div>
+</div>
+
+
+{% endblock contents %}

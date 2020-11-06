@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+Employee Removal
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}
+{% endblock navbar %}
+
+{% block contents %}
+<h2>Employee Removal</h2>
+<br>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Full Name</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in user %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{user.profile_user.first_name}} {{user.profile_user.last_name}}</td>
+            <td>
+                <a class="btn btn-danger" href="{% url "employee:delete" user.id %}">Remove</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock contents %}

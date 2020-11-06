@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+{{notification.title}}
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<h4>
+    <a class="btn btn-primary" href="{% url "employee:indexNotification" %}">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        Back to Notification List</a> <br>
+</h4>
+<br>
+<h2>{{notification.title}}</h2>
+<br>
+
+<div class="media border rounded" style="padding:20px">
+    <img src="" class="mr-3">
+    <div class="media-body">
+        <p>Created By: {{notification.created_by}}</p>
+        <hr>
+        <p>{{notification.body}}</p>
+        <hr>
+        <p><b>Created at: {{notification.created_at}}</b></p>
+        <p><b>Given to: {{notification.given_to}}</b></p>
+
+    </div>
+</div>
+
+
+{% endblock contents %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+Add New Meeting
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<h2>Add New Meeting</h2>
+<br>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for form in form %}
+    <div class="form-group">
+        {{form.label}}
+        {{form}}
+    </div>
+    {% endfor %}
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+
+{% endblock contents %}

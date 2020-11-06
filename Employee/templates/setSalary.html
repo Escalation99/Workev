@@ -1,0 +1,22 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Set Salary
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<h3>Set Salary</h3>
+<form method="post">
+    {% csrf_token %}
+    <p>Type the amount of salary for this user</p>
+    <input type="text" name="salaryAmount">
+    <input type="submit" name="confirmSalary">
+</form>
+{% endblock contents %}

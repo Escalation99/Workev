@@ -1,0 +1,20 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Index Page
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<p>Are you sure want to logout?</p>
+<form method="post">
+    {% csrf_token %}
+    <input type="submit" name="logout" class="btn btn-primary">
+</form>
+{% endblock contents %}

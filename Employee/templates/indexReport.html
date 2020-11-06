@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+Task Report
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}
+{% endblock navbar %}
+
+{% block contents %}
+<h2>Task Report</h2>
+<br>
+
+<div class="row">
+    <div class="col">
+        <div class="card card-body">
+            <h4>Filter By:</h4>
+            <form method="get">
+                {{myFilter.form}}
+                <button class="btn btn-primary" type="submit">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Task Name</th>
+            <th scope="col">Given By</th>
+            <th scope="col">Delegated to</th>
+            <th scope="col">Sent</th>
+            <th scope="col">Attachment</th>
+            <th scope="col">Detail</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for report in report %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{report.task.title}}</td>
+            <td>{{report.created_by}}</td>
+            <td>{{report.given_to}}</td>
+            <td>{{report.sent_at}}</td>
+            {% if report.attachment %}
+            <td><a href="{{report.attachment.url}}">Download</a></td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+            <td><a href="{% url "employee:detailReport" report.id %}">show</a></td>
+            <td>
+                {% if report.task.status == "Approved" %}
+                <a href="#" class="btn btn-success btn-sm disabled">Approved</a>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                    data-target="#exampleModalCenter{{report.id}}">
+                    Finish
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalCenter{{report.id}}" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to finish
+                                    <b>{{report.task.title}} </b>?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <a class="btn btn-danger" href="{% url "employee:deleteReport" report.id %}">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% elif report.task.status == "Rejected" %}
+                <a href="#" class="btn btn-danger btn-sm disabled">Rejected</a>
+                {% else %}
+                <a href="{% url "employee:rejectReport" report.id %}" class="btn btn-outline-danger btn-sm">Reject</a>
+                <a href="{% url "employee:approveReport" report.id %}"
+                    class="btn btn-outline-success btn-sm">Approve</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<ul class="pagination">
+    {% if report.has_previous %}
+    <li class="page-item">
+        <a href="?page={{report.previous_page_number}}" class="page-link">&laquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo</a>
+    </li>
+    {% endif %}
+
+    {% for p in report.paginator.page_range %}
+    {% if report.number == p %}
+    <li class="page-item active">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if report.has_next %}
+    <li class="page-item">
+        <a href="?page={{report.next_page_number}}" class="page-link">&raquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&raquo</a>
+    </li>
+    {% endif %}
+</ul>
+
+{% endblock contents %}

@@ -1,0 +1,377 @@
+{%extends "baseIndex.html"%}
+{% load static %}
+
+{% block page_title %}
+Index Page
+{% endblock page_title %}
+
+{% block navbar %}
+
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}
+
+{% endblock navbar %}
+
+{% block jumbotron %}
+<div class="jumbotron jumbotron-fluid" style="margin-top:72px">
+    <div class="container">
+        <h3 style="text-align:center">Welcome to the Employee Management System</h3>
+        <h4 style="text-align:center">
+            {{request.user.profile_user.first_name}}
+            {{request.user.profile_user.last_name}}
+        </h4>
+    </div>
+</div>
+{% endblock jumbotron %}
+
+
+{% block contents %}
+
+{% if request.user.profile_user.position != "CEO" %}
+<div class="d-flex flex-row justify-content-center">
+    <div class="p-2">
+        <h4><i class="fa fa-tasks mr-2" aria-hidden="true"></i>Your Tasks</h4>
+        <hr>
+        <div class="d-flex flex-row">
+
+            <div class="p-2">
+                <div class="card bg-light shadow-sm p-3 mb-5 mr-5 shadow-sm border"
+                    style="width: 18rem;border-radius:5px; ">
+                    <h5><i class="fa fa-bookmark mr-2" aria-hidden="true"></i>
+                        New Task</h5>
+                    <hr>
+
+                    {% if newTaskQty == 0 %}
+                    <h5 class="text-danger">You have no task</h5>
+                    {% else %}
+                    {% for task in newTask|dictsortreversed:"created_at" %}
+                    <div class="media">
+                        <div class="media-body">
+                            <h5>{{task.title}}</h5>
+                            <div class="modal fade" id="exampleModalLong{{task.id}}" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">{{task.title}}</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{task.body}}
+                                            <br>
+                                            {% if task.attachment %}
+                                            <a href="{{task.attachment.url}}">Download Attachment</a>
+                                            {% else %}
+                                            <hr>
+                                            No Attachment
+                                            <hr>
+                                            <b>Created by: </b>{{task.created_by}} at {{task.created_at}}
+                                            {% endif %}
+
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-primary"
+                                                href="{% url "employee:acceptTask" task.id %}">Accept Task</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p><b>Posted by:</b> {{task.created_by}} on {{task.created_at}}</p>
+                            <button type="button" class="btn btn-outline-primary" data-toggle="modal"
+                                data-target="#exampleModalLong{{task.id}}">
+                                Show Detail
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr>
+                    {% endfor %}
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <div class="p-2">
+                <div class="card bg-light shadow-sm p-3 mb-5 mr-5 shadow-sm border"
+                    style="width: 18rem;border-radius:5px;">
+                    <h5><i class="fa fa-clock mr-2" aria-hidden="true"></i>
+                        Ongoing Task</h5>
+                    <hr>
+                    {% if taskOnProgressQty == 0 %}
+                    <h5 class="text-danger">You have no task</h5>
+                    {% else %}
+                    {% for task in taskOnProgress|dictsortreversed:"created_at" %}
+                    <div class="media">
+                        <div class="media-body">
+                            <h5>{{task.title}}</h5>
+                            <div class="modal fade" id="exampleModalLong{{task.id}}" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">{{task.title}}</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{task.body}}
+                                            <br>
+                                            {% if task.attachment %}
+                                            <a href="{{task.attachment.url}}">Download Attachment</a>
+                                            {% else %}
+                                            <hr>
+                                            No Attachment
+                                            <hr>
+                                            <b>Created by: </b>{{task.created_by}} at {{task.created_at}}
+                                            {% endif %}
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p><b>Posted by:</b> {{task.created_by}} on {{task.created_at}}</p>
+                            <button type="button" class="btn btn-outline-primary" data-toggle="modal"
+                                data-target="#exampleModalLong{{task.id}}">
+                                Show Detail
+                            </button>
+                        </div>
+                    </div>
+                    <hr>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="p-2">
+                <div class="card bg-light shadow-sm p-3 mb-5 shadow-sm border" style="width: 18rem;border-radius:5px;">
+                    <h5><i class="fa fa-check mr-2" aria-hidden="true"></i>Finished Task</h5>
+                    <hr>
+                    {% if taskFinishedQty == 0 %}
+                    <h5 class="text-danger">You have no task</h5>
+                    {% else %}
+                    {% for task in taskFinished|dictsortreversed:"created_at" %}
+                    <div class="media">
+                        <div class="media-body">
+                            <h5>{{task.title}}</h5>
+                            <div class="modal fade" id="exampleModalLong{{task.id}}" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">{{task.title}}</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{task.body}}
+                                            <hr>
+                                            {% if task.attachment %}
+                                            <a href="{{task.attachment.url}}">Download Attachment</a>
+                                            {% else %}
+                                            <hr>
+                                            No Attachment
+                                            <hr>
+                                            {% endif %}
+                                            <hr>
+                                            <b>Created by: </b>{{task.created_by}} at {{task.created_at}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p><b>Posted by:</b> {{task.created_by}} on {{task.created_at}}</p>
+                            <button type="button" class="btn btn-outline-primary" data-toggle="modal"
+                                data-target="#exampleModalLong{{task.id}}">
+                                Show Detail
+                            </button>
+                        </div>
+                    </div>
+                    <hr>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+{% endif %}
+
+
+<div class="container">
+    <h4><i class="fa fa-users mr-2" aria-hidden="true"></i>Your Meetings</h4>
+    <hr>
+
+
+    {% for meetings in meetings|dictsortreversed:"created_at" %}
+
+    <div class="accordion" id="accordionExample{{meetings.id}}">
+        <div class="card">
+            <div class="card-header" id="headingOne{{meetings.id}}">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse"
+                        data-target="#collapseOne{{meetings.id}}" aria-expanded="true" aria-controls="collapseOne">
+                        <b>{{meetings.name}} - {{meetings.type}}</b>
+                    </button>
+                </h2>
+            </div>
+
+            <div id="collapseOne{{meetings.id}}" class="collapse" aria-labelledby="headingOne{{meetings.id}}"
+                data-parent="#accordionExample{{meetings.id}}">
+                <div class="card-body">
+                    <p>{{meetings.content|truncatechars:150}}</p>
+                    <p><b>Posted by:</b> {{meetings.created_by}} on {{meetings.created_at}}</p>
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal"
+                        data-target="#exampleModalLong{{meetings.id}}">
+                        Show Detail
+                    </button>
+
+                    <div class="modal fade" id="exampleModalLong{{meetings.id}}" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">{{meetings.name}}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><b>Meeting Date & Time:</b> {{meetings.meeting_date}} at
+                                        {{meetings.meeting_time}}</p>
+                                    <p><b>Description: </b>{{meetings.content}}</p>
+                                    {% if meetings.attachment %}
+                                    <a href="{{meetings.attachment.url}}">Download Attachment</a>
+                                    {% else %}
+                                    <hr>
+                                    No Attachment
+                                    <hr>
+                                    <b>Created by: </b>{{meetings.created_by}} at {{meetings.created_at}}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<br><br>
+<div class="container">
+
+
+    <h4><i class="fa fa-comments mr-2" aria-hidden="true"></i>Your Recent Post</h4>
+    <hr>
+    {% for post in recent_post|dictsortreversed:"created_at" %}
+    <div class="accordion" id="accordionExample{{post.id}}">
+        <div class="card">
+            <div class="card-header" id="headingOne{{post.id}}">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse"
+                        data-target="#collapseOne{{post.id}}" aria-expanded="true" aria-controls="collapseOne">
+                        <b>{{post.title}} - {{post.category}}</b>
+                    </button>
+                </h2>
+            </div>
+
+            <div id="collapseOne{{post.id}}" class="collapse" aria-labelledby="headingOne{{post.id}}"
+                data-parent="#accordionExample{{post.id}}">
+                <div class="card-body">
+                    <p>{{post.body|truncatechars:150}}</p>
+                    <p><b>Posted by:</b> {{post.created_by}} on {{post.created_at}}</p>
+                    <a class="btn btn-outline-primary" href="{% url "discussion:detailUser" post.id %}">
+                        Show Detail
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<br><br><br>
+
+<div class="container">
+    <h4><i class="fa fa-bell" aria-hidden="true"></i>
+        Recent Notification</h4>
+    <hr>
+
+
+    {% for new_notification in new_notification|dictsortreversed:"created_at" %}
+
+    <div class="accordion" id="accordionExample{{new_notification.id}}">
+        <div class="card">
+            <div class="card-header" id="headingOne{{new_notification.id}}">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse"
+                        data-target="#collapseOne{{new_notification.id}}" aria-expanded="true"
+                        aria-controls="collapseOne">
+                        <b>{{new_notification.title}}</b>
+                        <span style="font-size: 14px;"> - {{new_notification.created_at}}</span>
+                    </button>
+                </h2>
+            </div>
+
+            <div id="collapseOne{{new_notification.id}}" class="collapse"
+                aria-labelledby="headingOne{{new_notification.id}}"
+                data-parent="#accordionExample{{new_notification.id}}">
+                <div class="card-body">
+                    <p>{{new_notification.body|truncatechars:150}}</p>
+                    <p><b>Posted by:</b> {{new_notificationings.created_by}} on {{new_notification.created_at}}</p>
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal"
+                        data-target="#exampleModalLong{{new_notification.id}}">
+                        Show Detail
+                    </button>
+
+                    <div class="modal fade" id="exampleModalLong{{new_notification.id}}" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">{{new_notification.title}}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><b>Description: </b>{{new_notification.body}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<br><br><br><br><br>
+
+
+{% endblock contents %}
+
+{% block footer %}
+
+<footer class="page-footer font-small pt-1 bg-dark">
+
+    <div class="footer-copyright text-center py-3 text-white">© 2020 Copyright: WorkEv Corporation
+    </div>
+
+</footer>
+<!-- Footer -->
+{% endblock footer %}

@@ -1,0 +1,22 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Paid Leave Confirmation
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<p>Are you sure want to approve <b>{{paidleave.created_by.profile_user.first_name}}
+        {{paidleave.created_by.profile_user.last_name}}</b>'s Paid Leave on <b>{{paidleave.title}}</b>?</p>
+<form method="post">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" name="confirmPaidLeave">
+    <a class="btn btn-danger" href="{% url "employee:indexPaidLeave" %}">Cancel</a>
+</form>
+{% endblock contents %}

@@ -1,0 +1,26 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Removal Confirmation
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+{% for user in user %}
+<p>Are you sure want to remove <b>{{user.profile_user.first_name}} {{user.profile_user.last_name}}</b> ?</p>
+{% endfor %}
+
+<form method="post">
+    {% csrf_token %}
+    <p>Type "CONFIRM" to confirm your delete</p>
+    <input type="text" name="confirmationText">
+    <input class="btn btn-primary" type="submit" name="confirmRemove">
+    <a class="btn btn-danger" href="{% url "employee:index" %}">Cancel</a>
+</form>
+{% endblock contents %}
