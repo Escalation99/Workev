@@ -27,7 +27,6 @@ Index Page
 </div>
 {% endblock jumbotron %}
 
-
 {% block contents %}
 
 {% if request.user.profile_user.position != "CEO" %}
@@ -38,8 +37,8 @@ Index Page
         <div class="d-flex flex-row">
 
             <div class="p-2">
-                <div class="card bg-light shadow-sm p-3 mb-5 mr-5 shadow-sm border"
-                    style="width: 18rem;border-radius:5px; ">
+                <div class="card bg-light shadow-sm p-3 mb-5 mr-5 shadow-sm border redhovered"
+                    style="width: 30rem;border-radius:5px; ">
                     <h5><i class="fa fa-bookmark mr-2" aria-hidden="true"></i>
                         New Task</h5>
                     <hr>
@@ -100,7 +99,7 @@ Index Page
 
             <div class="p-2">
                 <div class="card bg-light shadow-sm p-3 mb-5 mr-5 shadow-sm border"
-                    style="width: 18rem;border-radius:5px;">
+                    style="width: 30rem;border-radius:5px;">
                     <h5><i class="fa fa-clock mr-2" aria-hidden="true"></i>
                         Ongoing Task</h5>
                     <hr>
@@ -153,7 +152,7 @@ Index Page
             </div>
 
             <div class="p-2">
-                <div class="card bg-light shadow-sm p-3 mb-5 shadow-sm border" style="width: 18rem;border-radius:5px;">
+                <div class="card bg-light shadow-sm p-3 mb-5 shadow-sm border" style="width: 30rem;border-radius:5px;">
                     <h5><i class="fa fa-check mr-2" aria-hidden="true"></i>Finished Task</h5>
                     <hr>
                     {% if taskFinishedQty == 0 %}
@@ -361,7 +360,6 @@ Index Page
 </div>
 
 <br><br><br><br><br>
-
 
 {% endblock contents %}
 

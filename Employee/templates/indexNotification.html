@@ -21,7 +21,7 @@ My Notification
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">ID</th>
+            <th scope="col">No</th>
             <th scope="col">Title</th>
             <th scope="col">Body</th>
             <th scope="col">Created By</th>
@@ -32,23 +32,10 @@ My Notification
     <tbody>
         {% for notification in notification %}
 
-        {% if notification.read %}
-        <tr class="table-active">
-            <td>{{forloop.counter}}</td>
-            <td><a href="{% url "employee:detailNotification" notification.id %}">{{notification.title}}</a></td>
-            <td>{{notification.body}}</td>
-            <td>{{notification.created_by}}</td>
-            <td>{{notification.created_at}}</td>
-            <td>
-                <a href="{% url "employee:deleteNotification" notification.id %}" class="btn btn-danger btn-sm"><i
-                        class="fa fa-trash" aria-hidden="true"></i>
-                </a>
-            </td>
-        </tr>
-        {% else %}
+
         <tr>
             <td>{{forloop.counter}}</td>
-            <td><a href="{% url "employee:detailNotification" notification.id %}">{{notification.title}}</a></td>
+            <td>{{notification.title}}</td>
             <td>{{notification.body}}</td>
             <td>{{notification.created_by}}</td>
             <td>{{notification.created_at}}</td>
@@ -58,7 +45,6 @@ My Notification
                 </a>
             </td>
         </tr>
-        {% endif %}
         {% endfor %}
     </tbody>
 </table>

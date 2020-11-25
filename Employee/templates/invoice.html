@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Django PDF</title>
+    <style>
+        th,
+        td {
+            padding: 5px 15px;
+        }
+
+        th {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        td {
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align: center;">EMPLOYEE PERFORMANCE REPORT ({{today}})</h1>
+    <hr>
+    <p><b>Name:</b> {{profile.first_name}} {{profile.last_name}}</p>
+    <p><b>Email:</b> {{profile.email}}</p>
+    <p><b>Address:</b> {{profile.address}}</p>
+    <p><b>Position:</b> {{profile.position}}</p>
+    <p><b>Employee Since:</b> {{profile.employeeSince}}</p>
+    <hr>
+    <h2>TASK LIST</h2>
+
+    <table border="1" style="border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: antiquewhite;">
+                <td><b>Name</b></td>
+                <td><b>Created At</b></td>
+                <td><b>Deadline</b></td>
+                <td><b>Status</b></td>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for task in task %}
+            <tr>
+                <td>{{task.title}}</td>
+                <td>{{task.created_at}}</td>
+                <td>{{task.deadline}}</td>
+                <td>{{task.status}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

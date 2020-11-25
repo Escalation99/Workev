@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+Performance Report
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}
+{% endblock navbar %}
+
+{% block contents %}
+
+<h2>Users List</h2>
+<br>
+
+<div class="row">
+    <div class="col">
+        <div class="card card-body">
+            <h4>Filter By:</h4>
+            <form method="get">
+                {{myFilter.form}}
+                <button class="btn btn-primary" type="submit">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+
+{% if profile %}
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Full Name</th>
+            <th scope="col">Photo</th>
+            <th scope="col">Email</th>
+            <th scope="col">Position</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for profile in profile %}
+        <tr>
+            <td>{{profile.first_name}} {{profile.last_name}}</td>
+            <td><img height="100px" width="100px" src="{{profile.profile_pic.url}}" class="mr-3"
+                    style="border-radius:25px;">
+            </td>
+            <td>{{profile.email}}</td>
+            <td>{{profile.position}}</td>
+            <td>
+                <a href="{% url "employee:generatePerformance" profile.id %}" class="btn btn-primary">Generate
+                    Report</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<ul class="pagination">
+    {% if profile.has_previous %}
+    <li class="page-item">
+        <a href="?page={{profile.previous_page_number}}" class="page-link">&laquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo</a>
+    </li>
+    {% endif %}
+
+    {% for p in profile.paginator.page_range %}
+    {% if profile.number == p %}
+    <li class="page-item active">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+        <a href="?page={{p}}" class="page-link">{{ p }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if profile.has_next %}
+    <li class="page-item">
+        <a href="?page={{profile.next_page_number}}" class="page-link">&raquo</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&raquo</a>
+    </li>
+    {% endif %}
+</ul>
+{% else %}
+<h4 class="text-danger">No Users Found</h4>
+{% endif %}
+<br><br><br>
+
+
+{% endblock contents %}

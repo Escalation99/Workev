@@ -6,6 +6,10 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
+    url(r'^generatePerformance/(?P<profile_id>[0-9]+)/$',
+        views.generatePerformance, name="generatePerformance",),
+    url(r'^indexPerformance/$', views.indexPerformance, name="indexPerformance"),
+
     url(r'^editSubtask/(?P<update_id>[0-9]+)$',
         views.editSubtask, name="editSubtask"),
     url(r'^deleteSubtask/(?P<subtask_id>[0-9]+)$',
@@ -27,12 +31,14 @@ urlpatterns = [
         views.deletePaidLeave, name="deletePaidLeave"),
     url(r'^indexPaidLeave/$', views.indexPaidLeave, name="indexPaidLeave"),
 
-    url(r'^detailNotification/(?P<notification_id>[0-9]+)/$',
-        views.detailNotification, name="detailNotification",),
     url(r'^deleteNotification/(?P<delete_id>[0-9]+)$',
         views.deleteNotification, name="deleteNotification"),
     url(r'^indexNotification/$', views.indexNotification, name="indexNotification"),
 
+    url(r'^deleteFeedbackReply/(?P<delete_id>[0-9]+)$',
+        views.deleteFeedbackReply, name="deleteFeedbackReply"),
+    url(r'^indexFeedbackReply/$', views.indexFeedbackReply,
+        name="indexFeedbackReply"),
     url(r'^deleteAppFeedback/(?P<delete_id>[0-9]+)$',
         views.deleteAppFeedback, name="deleteAppFeedback"),
     url(r'^addAppFeedbackReply/(?P<feedback_id>[0-9]+)$', views.addAppFeedbackReply,
@@ -63,6 +69,8 @@ urlpatterns = [
 
     url(r'^submitTask/(?P<task_id>[0-9]+)/$',
         views.submitTask, name="submitTask",),
+    url(r'^reattemptTask/(?P<task_id>[0-9]+)/$',
+        views.reattemptTask, name="reattemptTask",),
     url(r'^acceptTask/(?P<task_id>[0-9]+)/$',
         views.acceptTask, name="acceptTask",),
     url(r'^userTask/$', views.userTask, name="userTask"),
@@ -77,8 +85,8 @@ urlpatterns = [
 
     url(r'^editMeeting/(?P<update_id>[0-9]+)$',
         views.editMeeting, name="editMeeting"),
-    url(r'^deleteMeeting/(?P<delete_id>[0-9]+)$',
-        views.deleteMeeting, name="deleteMeeting"),
+    url(r'^finishMeeting/(?P<delete_id>[0-9]+)$',
+        views.finishMeeting, name="finishMeeting"),
     url(r'^detailMeetingUser/(?P<meeting_id>[0-9]+)/$',
         views.detailMeetingUser, name="detailMeetingUser",),
     url(r'^detailMeeting/(?P<meeting_id>[0-9]+)/$',

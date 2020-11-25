@@ -75,12 +75,12 @@ Meeting List
     <thead class="thead-dark">
         <tr>
             <th scope="col">Title</th>
-            <th scope="col">Type</th>
             <th scope="col">Division</th>
             <th scope="col">Location</th>
             <th scope="col">Category</th>
             <th scope="col">Date & Time</th>
             <th scope="col">Attachment</th>
+            <th scope="col">Status</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -89,7 +89,6 @@ Meeting List
         {% for meeting in meeting %}
         <tr>
             <td><a href="{% url "employee:detailMeeting" meeting.id %}">{{meeting.name}}</a></td>
-            <td>{{meeting.type}}</td>
             <td>{{meeting.division}}</td>
             <td>{{meeting.room}}</td>
             <td>{{meeting.category}}</td>
@@ -99,8 +98,19 @@ Meeting List
             {% else %}
             <td>-</td>
             {% endif %}
+
+            {% if meeting.finished %}
+            <td class="text-danger">Ended</td>
+            {% else %}
+            <td class="text-warning">New</td>
+            {% endif %}
+
             <td>
 
+
+
+
+                {% if meeting.finished == False %}
                 {% if request.user.profile_user.position == "CEO" %}
                 <a class="btn btn-warning btn-sm" href="{% url "employee:editMeeting" meeting.id %}">
                     Edit
@@ -125,12 +135,15 @@ Meeting List
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <a class="btn btn-danger" href="{% url "employee:deleteMeeting" meeting.id %}">End
+                                <a class="btn btn-danger" href="{% url "employee:finishMeeting" meeting.id %}">End
                                     Meeting</a>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% endif %}
+
+
                 {% else %}
                 -
                 {% endif %}

@@ -91,6 +91,8 @@ Task Report
                 {% elif report.task.status == "Rejected" %}
                 <a href="#" class="btn btn-danger btn-sm disabled">Rejected</a>
                 {% else %}
+                {% endif %}
+                {% if report.task.status == "Waiting Approval" %}
                 <a href="{% url "employee:rejectReport" report.id %}" class="btn btn-outline-danger btn-sm">Reject</a>
                 <a href="{% url "employee:approveReport" report.id %}"
                     class="btn btn-outline-success btn-sm">Approve</a>

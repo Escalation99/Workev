@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block page_title %}
-App Feedback List
+Feedback Replies
 {% endblock page_title %}
 
 {% block navbar %}
@@ -13,27 +13,31 @@ App Feedback List
 {% endblock navbar %}
 
 {% block contents %}
-<h2>Company Feedback List</h2>
+
+<h2>Feedback Replies</h2>
 <br>
+
+{% if feedback %}
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Given By</th>
+            <th scope="col">No</th>
             <th scope="col">Title</th>
+            <th scope="col">Body</th>
             <th scope="col">Created At</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
+
         {% for feedback in feedback %}
         <tr>
             <td>{{forloop.counter}}</td>
-            <td>{{feedback.created_by.profile_user.first_name}} {{feedback.created_by.profile_user.last_name}}</td>
-            <td><a href="{% url "employee:detailAppFeedback" feedback.id %}">{{feedback.title}}</a></td>
-            <td>{{feedback.created_at.date}}</td>
+            <td>{{feedback.title}}</td>
+            <td>{{feedback.body}}</td>
+            <td>{{feedback.created_at}}</td>
             <td>
-                <a class="btn btn-primary btn-sm" href="{% url "employee:addAppFeedbackReply" feedback.id %}">Reply</a>
+
                 <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
                     data-target="#exampleModalCenter{{feedback.id}}">
                     Delete
@@ -42,7 +46,7 @@ App Feedback List
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModalCenter{{feedback.id}}" tabindex="-1" role="dialog"
                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal alert-danger" role="document">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to delete?</h5>
@@ -53,7 +57,7 @@ App Feedback List
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 <a class="btn btn-danger"
-                                    href="{% url "employee:deleteAppFeedback" feedback.id %}">Delete</a>
+                                    href="{% url "employee:deleteFeedbackReply" feedback.id %}">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -89,7 +93,7 @@ App Feedback List
 
     {% if feedback.has_next %}
     <li class="page-item">
-        <a href="?page={{meeting.next_page_number}}" class="page-link">&raquo</a>
+        <a href="?page={{feedback.next_page_number}}" class="page-link">&raquo</a>
     </li>
     {% else %}
     <li class="page-item disabled">
@@ -97,4 +101,10 @@ App Feedback List
     </li>
     {% endif %}
 </ul>
+{% else %}
+<h4 class="text-danger">No Replies Found</h4>
+{% endif %}
+<br><br><br>
+
+
 {% endblock contents %}

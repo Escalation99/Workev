@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from Homely.decorators import unauthenticated_user, allowed_users, HRD_only
 from django.contrib.auth.models import Group, User
 from Profile.models import Profile
@@ -13,7 +13,9 @@ from .forms import MeetingForm, TaskForm, TaskReportForm, ReportFeedbackForm, Fe
 import datetime
 from django.utils.timezone import utc
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .filters import TaskFilter, MeetingFilter, ReportFilter, UserTaskFilter
+from .filters import TaskFilter, MeetingFilter, ReportFilter, UserTaskFilter, ProfileFilter
+from .utils import render_to_pdf  # created in step 4
+from django.template.loader import get_template
 
 
 @login_required(login_url="login")
@@ -198,11 +200,12 @@ def userMeeting(request):
 
 @login_required(login_url="login")
 @allowed_users(allowed_roles=['Admin'])
-def deleteMeeting(request, delete_id):
-    meeting = Meeting.objects.filter(id=delete_id)
-    meeting.delete()
+def finishMeeting(request, delete_id):
+    meeting = Meeting.objects.get(id=delete_id)
+    meeting.finished = True
+    meeting.save()
     messages.success(
-        request, 'Meeting deleted Successfully!')
+        request, 'Meeting finished Successfully!')
     return redirect('employee:indexMeeting')
 
 
@@ -338,13 +341,13 @@ def editTask(request, update_id):
             messages.error(
                 request, 'Failed updating task!')
             return redirect('employee:indexTask')
-        
+
         notification = Notification(
-                created_by=request.user,
-                given_to=task.given_to,
-                title="Task Updated",
-                body="Your Task have been updated!",
-            )
+            created_by=request.user,
+            given_to=task.given_to,
+            title="Task Updated",
+            body="Your Task have been updated!",
+        )
         notification.save()
 
     context = {
@@ -358,16 +361,18 @@ def editTask(request, update_id):
 @allowed_users(allowed_roles=['Staff', 'Admin'])
 def detailTask(request, task_id):
     task = Task.objects.get(id=task_id)
+
     subtask = SubTask.objects.filter(belongs_to=task)
+    report = TaskReport.objects.filter(task=task)
+    reportFeedback = ReportFeedback.objects.filter(report=report)
+
     is_hrd = request.user.groups.filter(name='Admin').exists()
-    checkSubtask = SubTask.objects.filter(
-        given_to=request.user, finished=False, belongs_to=task.id).count()
 
     context = {
         'navbar': is_hrd,
         'task': task,
         'subtask': subtask,
-        'checkSubtask': checkSubtask,
+        'reportFeedback': reportFeedback,
     }
     return render(request, "detailTask.html", context)
 
@@ -426,14 +431,38 @@ def acceptTask(request, task_id):
 
 
 @login_required(login_url="login")
+@allowed_users(allowed_roles=['Staff'])
+def reattemptTask(request, task_id):
+    is_hrd = request.user.groups.filter(name='Admin').exists()
+    task = Task.objects.get(id=task_id)
+    if request.method == "POST":
+        if request.POST["confirmReattempt"] == "Submit":
+            task.status = "On Progress"
+            task.save()
+            messages.success(
+                request, 'Task reattempted successfully!')
+            return redirect('employee:userTask')
+        else:
+            return redirect('employee:userTask')
+    context = {
+        'navbar': is_hrd,
+        'task': task,
+    }
+    return render(request, 'reattemptTaskConfirmation.html', context)
+
+
+@login_required(login_url="login")
 @allowed_users(allowed_roles=['Staff', 'Admin'])
 def submitTask(request, task_id):
     is_hrd = request.user.groups.filter(name='Admin').exists()
     task = Task.objects.get(id=task_id)
     checkSubtask = SubTask.objects.filter(
         given_to=request.user, finished=False, belongs_to=task.id).count()
+
     form = TaskReportForm(request.POST, request.FILES)
     if request.method == 'POST':
+        taskReport = TaskReport.objects.filter(task=task)
+        taskReport.delete()
         if form.is_valid():
             profile = form.save(commit=False)
             profile.task = task
@@ -534,6 +563,7 @@ def rejectReport(request, report_id):
     is_hrd = request.user.groups.filter(name='Admin').exists()
     report = TaskReport.objects.get(id=report_id)
     task = Task.objects.get(id=report.task.id)
+
     form = ReportFeedbackForm(request.POST, request.FILES)
     if request.method == 'POST':
         if form.is_valid():
@@ -553,6 +583,8 @@ def rejectReport(request, report_id):
 
             task.status = "Rejected"
             task.save()
+            subtask = SubTask.objects.filter(belongs_to=task)
+            subtask.update(finished=False)
             messages.success(
                 request, 'Success submit report rejection!')
             return redirect('employee:indexReport')
@@ -574,7 +606,7 @@ def rejectReport(request, report_id):
 @allowed_users(allowed_roles=['Staff', 'Admin'])
 def showFeedback(request, task_id):
     task = Task.objects.get(id=task_id)
-    report = TaskReport.objects.get(task=task)
+    report = TaskReport.objects.filter(task=task)
     feedback = ReportFeedback.objects.filter(report=report)
     is_hrd = request.user.groups.filter(name='Admin').exists()
 
@@ -1097,7 +1129,8 @@ def editSubtask(request, update_id):
         'finished': subtask.finished,
         'given_to': subtask.given_to,
     }
-    form = SubTaskForm(request.POST or None, request.FILES or None,initial=data, instance=subtask)
+    form = SubTaskForm(request.POST or None,
+                       request.FILES or None, initial=data, instance=subtask)
     if request.method == 'POST':
         if form.is_valid():
             form.save()
@@ -1111,11 +1144,11 @@ def editSubtask(request, update_id):
             return redirect('employee:indexTask')
 
     notification = Notification(
-                created_by=request.user,
-                given_to=subtask.given_to,
-                title="Subtask Edited!",
-                body="Your subtask have been edited!",
-            )
+        created_by=request.user,
+        given_to=subtask.given_to,
+        title="Subtask Edited!",
+        body="Your subtask have been edited!",
+    )
     notification.save()
     context = {
         'form': form,
@@ -1142,7 +1175,8 @@ def editMeeting(request, update_id):
         'created_at': meeting.created_at,
         'attachment': meeting.attachment,
     }
-    form = MeetingForm(request.POST or None, request.FILES or None,initial=data, instance=meeting)
+    form = MeetingForm(request.POST or None,
+                       request.FILES or None, initial=data, instance=meeting)
     if request.method == 'POST':
         if form.is_valid():
             form.save()
@@ -1164,14 +1198,105 @@ def editMeeting(request, update_id):
 
 @login_required(login_url="login")
 @allowed_users(allowed_roles=['Staff'])
-def detailNotification(request, notification_id):
+def readNotification(request, notification_id):
     notification = Notification.objects.get(id=notification_id)
     is_hrd = request.user.groups.filter(name='Admin').exists()
     notification.read = True
-    notification.save();
+    notification.save()
+    return redirect('employee:indexNotification')
 
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Admin'])
+def indexPerformance(request):
+
+    profile_list = Profile.objects.exclude(position="CEO")
+
+    myFilter = ProfileFilter(request.GET, queryset=profile_list)
+    profile_list = myFilter.qs
+
+    paginator = Paginator(profile_list, 10)
+    page = request.GET.get('page')
+    try:
+        profile = paginator.page(page)
+    except PageNotAnInteger:
+        profile = paginator.page(1)
+    except EmptyPage:
+        profile = paginator.page(paginator.num_pages)
+
+    is_hrd = request.user.groups.filter(name='Admin').exists()
     context = {
         'navbar': is_hrd,
-        'notification': notification,
+        'profile': profile,
+        'myFilter': myFilter,
     }
-    return render(request, "detailNotification.html", context)
+    return render(request, "indexPerformance.html", context)
+
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Staff'])
+def indexFeedbackReply(request):
+
+    feedbackReply_list = FeedbackReply.objects.filter(given_to=request.user)
+
+    paginator = Paginator(feedbackReply_list, 10)
+    page = request.GET.get('page')
+    try:
+        feedback = paginator.page(page)
+    except PageNotAnInteger:
+        feedback = paginator.page(1)
+    except EmptyPage:
+        feedback = paginator.page(paginator.num_pages)
+
+    is_hrd = request.user.groups.filter(name='Admin').exists()
+    context = {
+        'navbar': is_hrd,
+        'feedback': feedback,
+    }
+    return render(request, "indexFeedbackReply.html", context)
+
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Staff'])
+def deleteFeedbackReply(request, delete_id):
+    feedbackReply = FeedbackReply.objects.filter(id=delete_id)
+    feedbackReply.delete()
+    messages.success(
+        request, 'Feedback Reply deleted Successfully!')
+    return redirect('employee:indexFeedbackReply')
+
+
+# @login_required(login_url="login")
+# @allowed_users(allowed_roles=['Staff', 'Admin'])
+# def generateReport(request, profile_id):
+#     profile = Profile.objects.get(id=profile_id)
+#     is_hrd = request.user.groups.filter(name='Admin').exists()
+
+#     context = {
+#         'navbar': is_hrd,
+#     }
+#     return render(request, "detailMeeting.html", context)
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Admin'])
+def generatePerformance(request, profile_id):
+    profile = Profile.objects.get(id=profile_id)
+    task = Task.objects.filter(given_to=profile.user)
+    template = get_template('invoice.html')
+    context = {
+        'today': datetime.date.today(),
+        'task': task,
+        'profile': profile,
+    }
+    html = template.render(context)
+    pdf = render_to_pdf('invoice.html', context)
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = "Invoice_%s.pdf" % ("12341231")
+        content = "inline; filename='%s'" % (filename)
+        download = request.GET.get("download")
+        if download:
+            content = "attachment; filename='%s'" % (filename)
+        response['Content-Disposition'] = content
+        return response
+    return HttpResponse('Not Found')

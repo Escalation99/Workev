@@ -81,13 +81,14 @@ My Task List
             <td><a href="{% url "employee:acceptTask" task.id %}" class="btn btn-primary btn-sm">Accept Task</a></td>
             {% elif task.status == "Rejected" %}
             <td>
-                <a href="{% url "employee:acceptTask" task.id %}" class="btn btn-warning btn-sm">Reattempt</a>
+                <a href="{% url "employee:reattemptTask" task.id %}" class="btn btn-warning btn-sm">Reattempt</a>
                 <a href="{% url "employee:showFeedback" task.id %}" class="btn btn-primary btn-sm">Show Feedback</a>
             </td>
             {% elif task.status == "On Progress" %}
 
             <td>
                 <a href="{% url "employee:submitTask" task.id %}" class="btn btn-outline-success btn-sm">Finish Task</a>
+
             </td>
 
 

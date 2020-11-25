@@ -53,6 +53,7 @@ class Meeting(models.Model):
         max_length=50, choices=LIST_DIVISION, default="All")
     created_at = models.DateTimeField(auto_now_add=True)
     attachment = models.FileField(null=True, blank=True)
+    finished = models.BooleanField(default=False, blank=False)
 
     def save(self):
         super().save()

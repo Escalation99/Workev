@@ -26,6 +26,7 @@ My Meeting List
             <th scope="col">Category</th>
             <th scope="col">Created At</th>
             <th scope="col">Attachment</th>
+            <th scope="col">Status</th>
         </tr>
     </thead>
     <tbody>
@@ -42,6 +43,11 @@ My Meeting List
             <td><a href="{{meeting.attachment.url}}">Download</a></td>
             {% else %}
             <td>-</td>
+            {% endif %}
+            {% if meeting.finished %}
+            <td class="text-danger">Ended</td>
+            {% else %}
+            <td class="text-warning">New</td>
             {% endif %}
 
         </tr>
@@ -90,7 +96,6 @@ My Meeting List
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">ID</th>
             <th scope="col">Title</th>
             <th scope="col">Type</th>
             <th scope="col">Division</th>
@@ -98,12 +103,12 @@ My Meeting List
             <th scope="col">Category</th>
             <th scope="col">Created At</th>
             <th scope="col">Attachment</th>
+            <th scope="col">Status</th>
         </tr>
     </thead>
     <tbody>
         {% for meeting in meeting1 %}
         <tr>
-            <td>{{forloop.counter}}</td>
             <td><a href="{% url "employee:detailMeetingUser" meeting.id %}">{{meeting.name}}</a></td>
             <td>{{meeting.type}}</td>
             <td>{{meeting.division}}</td>
@@ -115,6 +120,13 @@ My Meeting List
             {% else %}
             <td>-</td>
             {% endif %}
+
+            {% if meeting.finished %}
+            <td class="text-danger">Ended</td>
+            {% else %}
+            <td class="text-warning">New</td>
+            {% endif %}
+
         </tr>
         {% endfor %}
 

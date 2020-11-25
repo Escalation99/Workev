@@ -34,15 +34,8 @@
                 <li class="nav-item">
                     <a href="{% url "employee:userTask" %}" class="nav-link">My Task</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Meetings</a>
-                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
-                        <a href="{% url "employee:indexMeeting" %}" class="dropdown-item bg-dark"
-                            style="color:white">All Meetings</a>
-                        <a href="{% url "employee:userMeeting" %}" class="dropdown-item bg-dark" style="color:white">My
-                            Meetings</a>
-                    </div>
+                <li class="nav-item">
+                    <a href="{% url "employee:userMeeting" %}" class="nav-link">Meetings</a>
                 </li>
 
                 <li class="nav-item dropdown">
@@ -69,8 +62,17 @@
 
                     <a href="{% url "employee:indexNotification" %}" class="nav-link">Notification</a>
                 </li>
-                <li class="nav-item">
-                    <a href="{% url "employee:addAppFeedback" %}" class="nav-link">Feedback</a>
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Feedback</a>
+                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                        <a href="{% url "employee:addAppFeedback" %}" class="dropdown-item bg-dark"
+                            style="color:white">Create Feedback</a>
+                        <a href="{% url "employee:indexFeedbackReply" %}" class="dropdown-item bg-dark"
+                            style="color:white">All
+                            Feedback Replies</a>
+                    </div>
                 </li>
 
                 <li class="nav-item dropdown">

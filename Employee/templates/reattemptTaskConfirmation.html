@@ -1,0 +1,21 @@
+{%extends "base.html"%}
+
+{% block page_title %}
+Task Reattempt Confirmation
+{% endblock page_title %}
+
+{% block navbar %}
+{% if navbar %}
+{%include "snippets/navbar_hrd.html"%}
+{%else%}
+{%include "snippets/navbar_user.html"%}
+{% endif %}{% endblock navbar %}
+
+{% block contents %}
+<p>Are you sure want to reattempt <b>{{task.title}}</b> ?</p>
+<form method="post">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" name="confirmReattempt">
+    <a class="btn btn-danger" href="{% url "employee:userTask" %}">Cancel</a>
+</form>
+{% endblock contents %}
