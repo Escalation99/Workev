@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
+    url(r'^generateMonthReport/$', views.generateMonthReport,
+        name="generateMonthReport"),
     url(r'^generatePerformance/(?P<profile_id>[0-9]+)/$',
         views.generatePerformance, name="generatePerformance",),
     url(r'^indexPerformance/$', views.indexPerformance, name="indexPerformance"),

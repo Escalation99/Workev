@@ -5,6 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Roboto&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css"
+        integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w=="
+        crossorigin="anonymous" />
+    <style>
+        * {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
     {% include "snippets/styles.html"%}
 
     <title>
@@ -14,7 +25,7 @@
     </title>
 </head>
 
-<body>
+<body class="bg-light">
     {% block navbar %}
     {% load static %}
     {% endblock navbar %}
@@ -23,7 +34,7 @@
 
     {% endblock jumbotron %}
 
-    <div class="container-fluid bg-white" style="margin-top: 20px">
+    <div class="container-fluid bg-light" style="margin-top: 20px">
         {% include "snippets/messages.html"%}
         {% block contents %}
 

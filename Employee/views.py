@@ -563,6 +563,7 @@ def rejectReport(request, report_id):
     is_hrd = request.user.groups.filter(name='Admin').exists()
     report = TaskReport.objects.get(id=report_id)
     task = Task.objects.get(id=report.task.id)
+    subtask = SubTask.objects.filter(belongs_to=task)
 
     form = ReportFeedbackForm(request.POST, request.FILES)
     if request.method == 'POST':
@@ -587,11 +588,25 @@ def rejectReport(request, report_id):
             subtask.update(finished=False)
             messages.success(
                 request, 'Success submit report rejection!')
-            return redirect('employee:indexReport')
+            context = {
+                'form': form,
+                'navbar': is_hrd,
+                'report': report,
+                'task': task,
+                'subtask': subtask,
+            }
+            return render(request, 'detailTask.html', context)
         else:
             messages.error(
                 request, 'Failed rejecting report!')
-            return redirect('employee:indexReport')
+            context = {
+                'form': form,
+                'navbar': is_hrd,
+                'report': report,
+                'task': task,
+                'subtask': subtask,
+            }
+            return render(request, 'detailTask.html', context)
 
     context = {
         'form': form,
@@ -1088,7 +1103,7 @@ def userPaidLeave(request):
 
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['Staff'])
+@allowed_users(allowed_roles=['Staff', 'Admin'])
 def finishSubtask(request, subtask_id):
     subtask = SubTask.objects.filter(id=subtask_id)
     subtask.update(finished=True)
@@ -1281,15 +1296,79 @@ def deleteFeedbackReply(request, delete_id):
 @allowed_users(allowed_roles=['Admin'])
 def generatePerformance(request, profile_id):
     profile = Profile.objects.get(id=profile_id)
-    task = Task.objects.filter(given_to=profile.user)
+    today = datetime.datetime.now()
+    task = Task.objects.filter(given_to=profile.user,created_at__year=today.year, created_at__month=today.month).order_by('-status')
+    alltask = Task.objects.filter(given_to=profile.user, created_at__year=today.year, created_at__month=today.month).count()
+    onprogresstask = Task.objects.filter(given_to=profile.user,status="On Progress",created_at__year=today.year, created_at__month=today.month).count()
+    donetask = Task.objects.filter(given_to=profile.user,status="Approved",created_at__year=today.year, created_at__month=today.month).count()
+    
+    meetings = Meeting.objects.filter(division=profile.position,created_at__year=today.year, created_at__month=today.month)
+    meetingsqty = meetings.count()
+    allmeetings = Meeting.objects.filter(division=profile.position,created_at__year=today.year, created_at__month=today.month).count()
+    finishedmeetings = Meeting.objects.filter(division=profile.position,finished=True,created_at__year=today.year, created_at__month=today.month).count()
+    unfinishedmeetings = Meeting.objects.filter(division=profile.position,finished=False,created_at__year=today.year, created_at__month=today.month).count()
+
     template = get_template('invoice.html')
     context = {
         'today': datetime.date.today(),
         'task': task,
         'profile': profile,
+        'alltask':alltask,
+        'onprogresstask':onprogresstask,
+        'donetask':donetask,
+        'meetings':meetings,
+        'meetingsqty':meetingsqty,
+        'allmeetings':allmeetings,
+        'finishedmeetings':finishedmeetings,
+        'unfinishedmeetings':unfinishedmeetings,
     }
     html = template.render(context)
     pdf = render_to_pdf('invoice.html', context)
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = "Report_%s.pdf" % (profile.first_name)
+        content = "inline; filename='%s'" % (filename)
+        download = request.GET.get("download")
+        if download:
+            content = "attachment; filename='%s'" % (filename)
+        response['Content-Disposition'] = content
+        return response
+    return HttpResponse('Not Found')
+
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Admin'])
+def generateMonthReport(request):
+    profilecount = Profile.objects.all().count()
+    profile = Profile.objects.all().order_by('position')
+
+    today = datetime.datetime.now()
+    task = Task.objects.filter(created_at__year=today.year, created_at__month=today.month).order_by('-status')
+    alltask = Task.objects.filter(created_at__year=today.year, created_at__month=today.month).count()
+    onprogresstask = Task.objects.filter(status="On Progress",created_at__year=today.year, created_at__month=today.month).count()
+    donetask = Task.objects.filter(status="Approved",created_at__year=today.year, created_at__month=today.month).count()
+    
+    meetings = Meeting.objects.filter(created_at__year=today.year, created_at__month=today.month).order_by('created_at')
+    meetingsqty = meetings.count()
+    finishedmeetings = Meeting.objects.filter(finished=True,created_at__year=today.year, created_at__month=today.month).count()
+    unfinishedmeetings = Meeting.objects.filter(finished=False,created_at__year=today.year, created_at__month=today.month).count()
+
+    template = get_template('invoice.html')
+    context = {
+        'today': datetime.date.today(),
+        'task': task,
+        'profilecount': profilecount,
+        'profile':profile,
+        'alltask':alltask,
+        'onprogresstask':onprogresstask,
+        'donetask':donetask,
+        'meetings':meetings,
+        'meetingsqty':meetingsqty,
+        'finishedmeetings':finishedmeetings,
+        'unfinishedmeetings':unfinishedmeetings,
+    }
+    html = template.render(context)
+    pdf = render_to_pdf('invoiceMonthly.html', context)
     if pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
         filename = "Invoice_%s.pdf" % ("12341231")

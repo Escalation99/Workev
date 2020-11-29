@@ -42,54 +42,40 @@
         Barat 11530</p>
 
     {% if today.month == 1 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (JANUARY {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (JANUARY {{today.year}})</b></p>
     {% elif today.month == 2 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (FEBRUARY {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (FEBRUARY {{today.year}})</b></p>
     {% elif today.month == 3 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (MARCH {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (MARCH {{today.year}})</b></p>
     {% elif today.month == 4 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (APRIL {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (APRIL {{today.year}})</b></p>
     {% elif today.month == 5 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (MAY {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (MAY {{today.year}})</b></p>
     {% elif today.month == 6 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (JUNE {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (JUNE {{today.year}})</b></p>
     {% elif today.month == 7 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (JULY {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (JULY {{today.year}})</b></p>
     {% elif today.month == 8 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (AUGUST {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (AUGUST {{today.year}})</b></p>
     {% elif today.month == 9 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (SEPTEMBER {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (SEPTEMBER {{today.year}})</b></p>
     {% elif today.month == 10 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (OCTOBER {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (OCTOBER {{today.year}})</b></p>
     {% elif today.month == 11 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (NOVEMBER {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (NOVEMBER {{today.year}})</b></p>
     {% elif today.month == 12 %}
-    <p style="text-align: right;"><b>EMPLOYEE PERFORMANCE REPORT (DECEMBER {{today.year}})</b></p>
+    <p style="text-align: right;"><b>MONTHLY REPORT (DECEMBER {{today.year}})</b></p>
     {% endif %}
 
     <hr>
 
     <div style="background-color: lightgray;padding:5px;color:black;">
-        <h2>EMPLOYEE INFORMATION</h2>
+        <h2>EMPLOYEE STATUS</h2>
     </div>
-    <table style="align-content:top;">
-        <tr>
-            <td>
-                <p><b>Name:</b> {{profile.first_name}} {{profile.last_name}}</p>
-                <p><b>Email:</b> {{profile.email}}</p>
-                <p><b>Address:</b> {{profile.address}}</p>
-            </td>
-            <td>
-                <p><b>Position:</b> {{profile.position}}</p>
-                <p><b>Employee Since:</b> {{profile.employeeSince.date}}</p>
-                <p><b>Last Data Update:</b> {{profile.lastDataUpdate.date}}</p>
-            </td>
-        </tr>
-    </table>
-
+    <p><b>Employee Count: </b> {{profilecount}}</p>
 
     <div style="background-color: lightgray;padding:5px;color:black;">
-        <h2>TASK</h2>
+        <h2>ALL TASK</h2>
     </div>
 
 
@@ -123,7 +109,7 @@
     {% endif %}
 
     <div style="background-color: lightgray;margin:0;padding:5px;color:black;">
-        <h2>MEETINGS</h2>
+        <h2>ALL MEETINGS</h2>
     </div>
 
     {% if meetingsqty == 0 %}
@@ -156,7 +142,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <p style="text-align: right;font-size:10px;"><b>Total Meeting Held: </b>{{allmeetings}}</p>
+    <p style="text-align: right;font-size:10px;"><b>Total Meeting Held: </b>{{meetingsqty}}</p>
     <p style="text-align: right;font-size:10px;"><b>Finished Meeting: </b>{{finishedmeetings}}</p>
     <p style="text-align: right;font-size:10px;"><b>Unfinished Meeting: </b>{{unfinishedmeetings}}</p>
     {% endif %}
