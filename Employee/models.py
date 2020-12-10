@@ -159,6 +159,7 @@ class Feedback(models.Model):
     title = models.CharField(max_length=255, blank=True)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    responded = models.BooleanField(default=False, blank=False)
 
     def save(self):
         super().save()
@@ -168,6 +169,8 @@ class Feedback(models.Model):
 
 
 class FeedbackReply(models.Model):
+    feedback = models.ForeignKey(
+        Feedback, null=True, on_delete=models.CASCADE, related_name="feedback_user")
     created_by = models.ForeignKey(
         User, null=True, on_delete=models.CASCADE, related_name="app_feedback_reply_sender")
     given_to = models.ForeignKey(

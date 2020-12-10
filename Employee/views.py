@@ -412,43 +412,23 @@ def userTask(request):
 @login_required(login_url="login")
 @allowed_users(allowed_roles=['Admin', 'Staff'])
 def acceptTask(request, task_id):
-    is_hrd = request.user.groups.filter(name='Admin').exists()
     task = Task.objects.get(id=task_id)
-    if request.method == "POST":
-        if request.POST["confirmAccept"] == "Submit":
-            task.status = "On Progress"
-            task.save()
-            messages.success(
-                request, 'Task accepted successfully!')
-            return redirect('employee:userTask')
-        else:
-            return redirect('employee:userTask')
-    context = {
-        'navbar': is_hrd,
-        'task': task,
-    }
-    return render(request, 'acceptTaskConfirmation.html', context)
+    task.status = "On Progress"
+    task.save()
+    messages.success(
+        request, 'Task accepted successfully!')
+    return redirect('employee:userTask')
 
 
 @login_required(login_url="login")
 @allowed_users(allowed_roles=['Staff'])
 def reattemptTask(request, task_id):
-    is_hrd = request.user.groups.filter(name='Admin').exists()
     task = Task.objects.get(id=task_id)
-    if request.method == "POST":
-        if request.POST["confirmReattempt"] == "Submit":
-            task.status = "On Progress"
-            task.save()
-            messages.success(
-                request, 'Task reattempted successfully!')
-            return redirect('employee:userTask')
-        else:
-            return redirect('employee:userTask')
-    context = {
-        'navbar': is_hrd,
-        'task': task,
-    }
-    return render(request, 'reattemptTaskConfirmation.html', context)
+    task.status = "On Progress"
+    task.save()
+    messages.success(
+        request, 'Task reattempted successfully!')
+    return redirect('employee:userTask')
 
 
 @login_required(login_url="login")
@@ -588,25 +568,11 @@ def rejectReport(request, report_id):
             subtask.update(finished=False)
             messages.success(
                 request, 'Success submit report rejection!')
-            context = {
-                'form': form,
-                'navbar': is_hrd,
-                'report': report,
-                'task': task,
-                'subtask': subtask,
-            }
-            return render(request, 'detailTask.html', context)
+            return redirect('employee:indexReport')
         else:
             messages.error(
                 request, 'Failed rejecting report!')
-            context = {
-                'form': form,
-                'navbar': is_hrd,
-                'report': report,
-                'task': task,
-                'subtask': subtask,
-            }
-            return render(request, 'detailTask.html', context)
+            return redirect('employee:indexReport')
 
     context = {
         'form': form,
@@ -797,7 +763,7 @@ def detailAppFeedback(request, feedback_id):
 @allowed_users(allowed_roles=['Staff'])
 def addAppFeedback(request):
     is_hrd = request.user.groups.filter(name='Admin').exists()
-    receiver = User.objects.get(username='admin')
+    receiver = User.objects.get(username='Test_Supervisor')
     form = FeedbackForm(request.POST)
     if request.method == 'POST':
         if form.is_valid():
@@ -823,21 +789,11 @@ def addAppFeedback(request):
 @login_required(login_url="login")
 @allowed_users(allowed_roles=['Admin'])
 def deleteAppFeedback(request, delete_id):
-    is_hrd = request.user.groups.filter(name='Admin').exists()
     feedback = Feedback.objects.filter(id=delete_id)
-    if request.method == "POST":
-        if request.POST["confirmRemove"] == "Submit":
-            feedback.delete()
-            messages.success(
-                request, 'Feedback deleted Successfully!')
-            return redirect('employee:indexAppFeedback')
-        else:
-            return redirect('employee:indexAppFeedback')
-    context = {
-        'navbar': is_hrd,
-        'feedback': feedback,
-    }
-    return render(request, 'removeFeedbackConfirmation.html', context)
+    feedback.delete()
+    messages.success(
+        request, 'Notification deleted Successfully!')
+    return redirect('employee:indexAppFeedback')
 
 
 @login_required(login_url="login")
@@ -848,11 +804,14 @@ def addAppFeedbackReply(request, feedback_id):
     form = FeedbackReplyForm(request.POST)
     if request.method == 'POST':
         if form.is_valid():
-            profile = form.save(commit=False)
-            profile.created_by = request.user
-            profile.given_to = feedback.created_by
-            profile.save()
-
+            feedbackreply = form.save(commit=False)
+            feedbackreply.created_by = request.user
+            feedbackreply.given_to = feedback.created_by
+            feedbackreply.feedback = feedback
+            feedbackreply.save()
+            feedback.responded=True
+            feedback.save()
+        
             notification = Notification(
                 created_by=request.user,
                 given_to=feedback.created_by,
@@ -863,11 +822,11 @@ def addAppFeedbackReply(request, feedback_id):
 
             messages.success(
                 request, 'Success replying to Feedback!')
-            return redirect('index')
+            return redirect('employee:indexAppFeedback')
         else:
             messages.error(
                 request, 'Failed replying to Feedback!')
-            return redirect('index')
+            return redirect('employee:indexAppFeedback')
 
     context = {
         'form': form,
@@ -1105,6 +1064,15 @@ def userPaidLeave(request):
 @login_required(login_url="login")
 @allowed_users(allowed_roles=['Staff', 'Admin'])
 def finishSubtask(request, subtask_id):
+    subtask = SubTask.objects.filter(id=subtask_id)
+    subtask.update(finished=True)
+    messages.success(
+        request, 'Subtask finished Successfully!')
+    return redirect(request.META['HTTP_REFERER'])
+
+@login_required(login_url="login")
+@allowed_users(allowed_roles=['Admin'])
+def finishSubtaskAdmin(request, subtask_id):
     subtask = SubTask.objects.filter(id=subtask_id)
     subtask.update(finished=True)
     messages.success(

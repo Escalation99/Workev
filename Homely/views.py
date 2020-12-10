@@ -41,7 +41,7 @@ def index(request):
         division=request.user.profile_user.position).count()
 
     new_notification = Notification.objects.filter(
-        read=False, given_to=request.user).order_by('-created_at')[:5]
+        read=False, given_to=request.user).order_by('-created_at')[:2]
 
     taskUnfinished_qty = task_qty - taskFinishedQty
     employee_qty = User.objects.exclude(username="admin").count()
@@ -66,7 +66,7 @@ def index(request):
     }
 
     if request.user.is_authenticated():
-        template_name = 'index_user.html'
+        template_name = 'index_user2.html'
     else:
         template_name = 'index_anonymous.html'
 

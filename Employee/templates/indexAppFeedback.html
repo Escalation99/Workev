@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block page_title %}
-App Feedback List
+Feedback List
 {% endblock page_title %}
 
 {% block navbar %}
@@ -13,12 +13,12 @@ App Feedback List
 {% endblock navbar %}
 
 {% block contents %}
-<h2>Company Feedback List</h2>
+<h2>Feedback List</h2>
 <br>
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">ID</th>
+            <th scope="col">No</th>
             <th scope="col">Given By</th>
             <th scope="col">Title</th>
             <th scope="col">Created At</th>
@@ -33,7 +33,16 @@ App Feedback List
             <td><a href="{% url "employee:detailAppFeedback" feedback.id %}">{{feedback.title}}</a></td>
             <td>{{feedback.created_at.date}}</td>
             <td>
+
+                {% if feedback.responded == False %}
                 <a class="btn btn-primary btn-sm" href="{% url "employee:addAppFeedbackReply" feedback.id %}">Reply</a>
+                {% else %}
+                <button class="btn btn-warning btn-sm" disabled>Replied</button>
+                {% endif %}
+
+
+
+                <!-- Button trigger modal -->
                 <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
                     data-target="#exampleModalCenter{{feedback.id}}">
                     Delete
@@ -42,10 +51,11 @@ App Feedback List
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModalCenter{{feedback.id}}" tabindex="-1" role="dialog"
                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal alert-danger" role="document">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to delete?</h5>
+                                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to delete this
+                                    feedback ?</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>

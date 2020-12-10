@@ -107,7 +107,7 @@ Task List
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">ID</th>
+            <th scope="col">No</th>
             <th scope="col">Title</th>
             <th scope="col">Given By</th>
             <th scope="col">Given to</th>
@@ -133,13 +133,15 @@ Task List
             {% endif %}
 
             {% if task.status == "new" %}
-            <td class="text-danger">{{task.status}}</td>
+            <td class="text-secondary">{{task.status}}</td>
             {% elif task.status == "On Progress" %}
             <td class="text-primary">{{task.status}}</td>
             {% elif task.status == "Waiting Approval" %}
             <td class="text-warning">{{task.status}}</td>
             {% elif task.status == "Approved" %}
             <td class="text-success">{{task.status}}</td>
+            {% elif task.status == "Rejected" %}
+            <td class="text-danger">{{task.status}}</td>
             {% endif %}
 
             <td>{{task.deadline}}</td>

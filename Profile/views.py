@@ -46,7 +46,7 @@ def updateProfile(request):
         'position': profile.position,
         'profile_pic': profile.profile_pic,
     }
-    form = UserProfileForm(request.POST, request.FILES,
+    form = UserProfileForm(request.POST or None, request.FILES or None,
                            initial=data, instance=profile)
     if request.method == 'POST':
         if form.is_valid():

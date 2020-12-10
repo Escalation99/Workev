@@ -16,6 +16,8 @@ urlpatterns = [
         views.editSubtask, name="editSubtask"),
     url(r'^deleteSubtask/(?P<subtask_id>[0-9]+)$',
         views.deleteSubtask, name="deleteSubtask"),
+    url(r'^finishSubtaskAdmin/(?P<subtask_id>[0-9]+)$',
+        views.finishSubtaskAdmin, name="finishSubtaskAdmin"),
     url(r'^finishSubtask/(?P<subtask_id>[0-9]+)$',
         views.finishSubtask, name="finishSubtask"),
     url(r'^undoSubtask/(?P<subtask_id>[0-9]+)$',

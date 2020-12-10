@@ -41,7 +41,7 @@ My Task List
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">ID</th>
+            <th scope="col">No</th>
             <th scope="col">Title</th>
             <th scope="col">Given By</th>
             <th scope="col">Created At</th>
@@ -78,10 +78,61 @@ My Task List
             <td>{{task.deadline}}</td>
 
             {% if task.status == "new" %}
-            <td><a href="{% url "employee:acceptTask" task.id %}" class="btn btn-primary btn-sm">Accept Task</a></td>
+            <!-- Button trigger modal -->
+            <td>
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                    data-target="#exampleModalCenter{{task.id}}">
+                    Accept Task
+                </button>
+            </td>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalCenter{{task.id}}" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to accept this task ?
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <a class="btn btn-primary" href="{% url "employee:acceptTask" task.id %}">Accept</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {% elif task.status == "Rejected" %}
             <td>
-                <a href="{% url "employee:reattemptTask" task.id %}" class="btn btn-warning btn-sm">Reattempt</a>
+                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                    data-target="#exampleModalCenter{{task.id}}">
+                    Reattempt
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalCenter{{task.id}}" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to reattempt this
+                                    task
+                                    ?
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <a class="btn btn-primary"
+                                    href="{% url "employee:reattemptTask" task.id %}">Reattempt</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <a href="{% url "employee:showFeedback" task.id %}" class="btn btn-primary btn-sm">Show Feedback</a>
             </td>
             {% elif task.status == "On Progress" %}
@@ -136,6 +187,7 @@ My Task List
     {% endif %}
 </ul>
 {% endif %}
+<br><br><br>
 
 
 

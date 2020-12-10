@@ -17,6 +17,7 @@ class Profile(models.Model):
     salary = models.CharField(max_length=50, default="undefined")
 
     LIST_POSITION = {
+        ('CEO', 'CEO'),
         ('Vice CEO', 'Vice CEO'),
         ('Scrum Master', 'Scrum Master'),
         ('Project Manager', 'Project Manager'),
