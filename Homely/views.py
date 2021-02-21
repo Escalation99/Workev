@@ -19,6 +19,7 @@ def index(request):
     template_name = None
     task_qty = Task.objects.filter(given_to=request.user).count()
     recent_post = Post.objects.filter(created_by=request.user)[:2]
+    post_qty = recent_post.count()
 
     taskFinished = Task.objects.filter(
         given_to=request.user, status="Approved")[:5]
@@ -42,6 +43,7 @@ def index(request):
 
     new_notification = Notification.objects.filter(
         read=False, given_to=request.user).order_by('-created_at')[:2]
+    notifQty = new_notification.count()
 
     taskUnfinished_qty = task_qty - taskFinishedQty
     employee_qty = User.objects.exclude(username="admin").count()
@@ -63,6 +65,8 @@ def index(request):
         'meetings': meetings,
         'meetings_qty': meetings_qty,
         'new_notification': new_notification,
+        'notifQty': notifQty,
+        'post_qty': post_qty,
     }
 
     if request.user.is_authenticated():
@@ -96,6 +100,8 @@ def registerPage(request):
                 request, 'Success creating account!')
             return redirect('index')
         else:
+            messages.error(
+                request, 'Registration Failed!')
             return redirect('register')
     else:
         form1 = UserCreationForm()
@@ -129,19 +135,20 @@ def loginView(request):
         else:
             return redirect('login')
 
-
 # @login_required
 @allowed_users(allowed_roles=['Staff', 'Admin'])
-def logoutView(request):
+def logoutPage(request):
     is_hrd = request.user.groups.filter(name='Admin').exists()
     context = {
         'navbar': is_hrd,
     }
-    if request.method == "POST":
-        if request.POST["logout"] == "Submit":
-            logout(request)
-        return redirect('/')
     return render(request, "logout.html", context)
+
+# @login_required
+@allowed_users(allowed_roles=['Staff', 'Admin'])
+def logoutView(request):
+    logout(request)
+    return redirect('/')
 
 
 def home(request):

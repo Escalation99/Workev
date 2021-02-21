@@ -1,20 +1,24 @@
 {%extends "base.html"%}
 
 {% block page_title %}
-Index Page
+Logout Page
 {% endblock page_title %}
 
 {% block navbar %}
 {% if navbar %}
 {%include "snippets/navbar_hrd.html"%}
-{%else%}
+{% else %}
 {%include "snippets/navbar_user.html"%}
 {% endif %}{% endblock navbar %}
 
 {% block contents %}
 <p>Are you sure want to logout?</p>
-<form method="post">
+<a class="btn btn-danger text-white" href="{% url "index" %}">No</a>
+<a class="btn btn-primary text-white" href="{% url "logout" %}">Yes</a>
+
+<!-- <form method="post">
     {% csrf_token %}
-    <input type="submit" name="logout" class="btn btn-primary">
-</form>
+    <a class="btn btn-danger text-white" href="{% url "login" %}">No</a>
+    <input type="submit" name="logout" class="btn btn-primary" value="Yes">
+</form> -->
 {% endblock contents %}

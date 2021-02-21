@@ -18,13 +18,12 @@ My Meeting List
 <table class="table">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">ID</th>
             <th scope="col">Title</th>
             <th scope="col">Type</th>
             <th scope="col">Division</th>
             <th scope="col">Location / Link</th>
-            <th scope="col">Category</th>
-            <th scope="col">Created At</th>
+            <th scope="col">Topic</th>
+            <th scope="col">Date & Time</th>
             <th scope="col">Attachment</th>
             <th scope="col">Status</th>
         </tr>
@@ -32,13 +31,12 @@ My Meeting List
     <tbody>
         {% for meeting in meeting2 %}
         <tr>
-            <td>{{forloop.counter}}</td>
             <td><a href="{% url "employee:detailMeetingUser" meeting.id %}">{{meeting.name}}</a></td>
             <td>{{meeting.type}}</td>
             <td>{{meeting.division}}</td>
             <td>{{meeting.room}}</td>
             <td>{{meeting.category}}</td>
-            <td>{{meeting.created_at.date}}</td>
+            <td>{{meeting.meeting_date}} - {{meeting.meeting_time}}</td>
             {% if meeting.attachment %}
             <td><a href="{{meeting.attachment.url}}">Download</a></td>
             {% else %}
@@ -100,8 +98,8 @@ My Meeting List
             <th scope="col">Type</th>
             <th scope="col">Division</th>
             <th scope="col">Location / Link</th>
-            <th scope="col">Category</th>
-            <th scope="col">Created At</th>
+            <th scope="col">Topic</th>
+            <th scope="col">Date & Time</th>
             <th scope="col">Attachment</th>
             <th scope="col">Status</th>
         </tr>
@@ -114,7 +112,7 @@ My Meeting List
             <td>{{meeting.division}}</td>
             <td>{{meeting.room}}</td>
             <td>{{meeting.category}}</td>
-            <td>{{meeting.created_at.date}}</td>
+            <td>{{meeting.meeting_date}} - {{meeting.meeting_time}}</td>
             {% if meeting.attachment %}
             <td><a href="{{meeting.attachment.url}}">Download</a></td>
             {% else %}

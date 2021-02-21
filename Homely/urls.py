@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^employee/', include('Employee.urls', namespace="employee")),
     url(r'^discussion/', include('Discussion.urls', namespace="discussion")),
     url(r'^profile/', include('Profile.urls', namespace="profile")),
+    url(r'^logoutPage/$', views.logoutPage, name="logoutPage"),
     url(r'^logout/$', views.logoutView, name="logout"),
     url(r'^login/$', views.loginView, name="login"),
     url(r'^register/$', views.registerPage, name="register"),

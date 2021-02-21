@@ -65,18 +65,40 @@ My Task List
             <td>-</td>
             {% endif %}
 
-            {% if task.status == "new" or task.status == "Rejected" %}
-            <td class="text-danger">{{task.status}}</td>
+            {% if task.deadline > today_date %}
+            {% if task.status == "new" %}
+            <td class="text-secondary">{{task.status}}</td>
             {% elif task.status == "On Progress" %}
             <td class="text-primary">{{task.status}}</td>
             {% elif task.status == "Waiting Approval" %}
             <td class="text-warning">{{task.status}}</td>
-            {% elif task.status == "Approved" %}
+            {% elif task.status == "Rejected"%}
+            <td class="text-danger">{{task.status}}</td>
+            {% elif task.status == "Approved"%}
             <td class="text-success">{{task.status}}</td>
             {% endif %}
+            {% endif %}
 
+            {% if task.deadline < today_date %}
+            {% ifnotequal task.status "Approved"  %}
+            <td class="text-danger">Missed</td>
+            {% else %}
+            <td class="text-success">{{task.status}}</td>
+            {% endifnotequal %}
+            {% endif %}
+
+
+            {% if task.deadline > today_date %}
             <td>{{task.deadline}}</td>
+            {% elif task.deadline < today_date %}
+            {% ifequal task.status "Approved"  %}
+            <td>{{task.deadline}}</td>
+            {% else %}
+            <td class="text-danger">{{task.deadline}}</td>
+            {% endifequal%}
+            {% endif %}
 
+            {% if task.deadline > today_date %}
             {% if task.status == "new" %}
             <!-- Button trigger modal -->
             <td>
@@ -148,6 +170,17 @@ My Task List
             {% elif task.status == "Approved" %}
             <td>-</td>
             {% endif %}
+            {% else %}
+
+            {% if task.status == "Approved" %}
+            <td>-</td>
+            {% else %}
+            <td><span class="btn btn-danger btn-sm disabled">Deadline Missed</span></td>
+            {% endif %}
+
+            {% endif %}
+
+
         </tr>
         {% endfor %}
     </tbody>

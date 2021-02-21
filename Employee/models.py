@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
+
 
 # Create your models here.
 
@@ -25,15 +26,14 @@ class Meeting(models.Model):
     meeting_time = models.TimeField("Time (hh:mm)",
                                     auto_now=False, auto_now_add=False, default=timezone.now, blank=True, null=True)
 
-    LIST_CATEGORY = {
-        ('Sprint Planning', 'Sprint Planning'),
-        ('Code Review', 'Code Review'),
-        ('Sprint Retrospective', 'Sprint Retrospective'),
-        ('Alignment Meeting', 'Alignment Meeting'),
-        ('Regular Meeting', 'Regular Meeting'),
-    }
-    category = models.CharField(
-        max_length=50, choices=LIST_CATEGORY, default="Regular Meeting")
+    # LIST_CATEGORY = {
+    #     ('Sprint Planning', 'Sprint Planning'),
+    #     ('Code Review', 'Code Review'),
+    #     ('Sprint Retrospective', 'Sprint Retrospective'),
+    #     ('Alignment Meeting', 'Alignment Meeting'),
+    #     ('Regular Meeting', 'Regular Meeting'),
+    # }
+    category = models.CharField("Topic", max_length=255)
 
     LIST_DIVISION = {
         ('CEO', 'CEO'),

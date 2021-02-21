@@ -129,22 +129,44 @@ Task List
             {% if task.attachment %}
             <td><a href="{{task.attachment.url}}">Download</a></td>
             {% else %}
-            <td>No Attachments</td>
+            <td>-</td>
             {% endif %}
 
+            {% if task.deadline > today_date %}
             {% if task.status == "new" %}
             <td class="text-secondary">{{task.status}}</td>
             {% elif task.status == "On Progress" %}
             <td class="text-primary">{{task.status}}</td>
             {% elif task.status == "Waiting Approval" %}
             <td class="text-warning">{{task.status}}</td>
-            {% elif task.status == "Approved" %}
-            <td class="text-success">{{task.status}}</td>
-            {% elif task.status == "Rejected" %}
+            {% elif task.status == "Rejected"%}
             <td class="text-danger">{{task.status}}</td>
+            {% elif task.status == "Approved"%}
+            <td class="text-success">{{task.status}}</td>
+            {% endif %}
             {% endif %}
 
+            {% if task.deadline < today_date %}
+            {% ifnotequal task.status "Approved"  %}
+            <td class="text-danger">Missed</td>
+            {% else %}
+            <td class="text-success">{{task.status}}</td>
+            {% endifnotequal %}
+            {% endif %}
+
+
+
+            {% if task.deadline > today_date %}
             <td>{{task.deadline}}</td>
+            {% elif task.deadline < today_date %}
+            {% ifequal task.status "Approved"  %}
+            <td>{{task.deadline}}</td>
+            {% else %}
+            <td class="text-danger">{{task.deadline}}</td>
+            {% endifequal%}
+            {% endif %}
+
+
             <td>
                 {% if request.user.profile_user.position == "CEO" %}
                 <a href="{% url "employee:editTask" task.id %}" class="btn btn-warning btn-sm">Edit</a>
@@ -153,7 +175,7 @@ Task List
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
                     data-target="#exampleModalCenter{{task.id}}">
-                    Finish
+                    Delete
                 </button>
 
                 <!-- Modal -->
@@ -162,7 +184,7 @@ Task List
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to finish
+                                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to delete
                                     <b>{{task.title}} </b>?</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -170,8 +192,8 @@ Task List
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <a class="btn btn-danger" href="{% url "employee:deleteTask" task.id %}">End
-                                    Task</a>
+                                <a class="btn btn-danger" href="{% url "employee:deleteTask" task.id %}">Delete
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -9,15 +9,8 @@ class Post(models.Model):
     title = models.CharField(max_length=255)
     body = models.TextField()
 
-    LIST_CATEGORY = {
-        ('Jobdesc', 'Jobdesc'),
-        ('Meeting', 'Meeting'),
-        ('Announcement', 'Announcement'),
-        ('Other', 'Other'),
+    category = models.CharField(max_length=255)
 
-    }
-    category = models.CharField(
-        max_length=50, choices=LIST_CATEGORY, default="Jobdesc")
     created_at = models.DateTimeField(auto_now_add=True)
     attachment = models.FileField(null=True, blank=True)
 

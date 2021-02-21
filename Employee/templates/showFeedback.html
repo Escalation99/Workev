@@ -12,10 +12,10 @@
 {% endif %}{% endblock navbar %}
 
 {% block contents %}
-<h2>Feedback on: {{task.title}}</h2>
-<br>
 <a href="{% url "employee:userTask" %}" class="btn btn-primary">Back to My Task</a>
-<br>
+<br><br>
+<h2>Feedback on: {{task.title}}</h2>
+
 <br>
 
 {% for feedback in feedback %}

@@ -26,7 +26,10 @@
     <div class="media-body">
         <h5>Hosted by: {{meeting.created_by}}</h5>
         <hr>
-        <p><b>Meeting Location: </b>{{meeting.room}}</p>
+        <p><b>Location: </b>{{meeting.room}}</p>
+        <p><b>Date & Time: </b>{{meeting.meeting_date}} - {{meeting.meeting_time}}</p>
+        <hr>
+        <p><b>Topic: </b>{{meeting.category}}</p>
         <p><b>Description: </b>{{meeting.content}}</p>
         {% if meeting.attachment %}
         <p><a href="{{meeting.attachment.url}}">Download Attachment</a></p>

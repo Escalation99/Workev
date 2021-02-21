@@ -12,7 +12,7 @@ Reply Feedback
 {% endif %}{% endblock navbar %}
 
 {% block contents %}
-<h2>{{feedback.created_by.profile_user.first_name}} {{feedback.created_by.profile_user.last_name}}'s App Feedback:
+<h2>{{feedback.created_by.profile_user.first_name}} {{feedback.created_by.profile_user.last_name}}'s Feedback:
     {{feedback.title}}</h2>
 <br>
 <form method="POST" enctype="multipart/form-data">
@@ -25,6 +25,9 @@ Reply Feedback
     {% endfor %}
 
     <button class="btn btn-primary" type="submit">Submit</button>
+    <a class="btn btn-danger text-white" href="{% url "employee:indexAppFeedback" %}">Cancel</a>
+
+
 </form>
 
 {% endblock contents %}

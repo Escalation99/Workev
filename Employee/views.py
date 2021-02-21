@@ -257,6 +257,8 @@ def indexTask(request):
 
     form = TaskForm(request.POST, request.FILES)
     form2 = SubTaskForm(request.POST)
+    today_date = datetime.date.today()
+
 
     if request.method == 'POST':
         if form.is_valid():
@@ -298,6 +300,7 @@ def indexTask(request):
         'myFilter1': myFilter,
         'form': form,
         'form2': form2,
+        'today_date':today_date,
     }
 
     return render(request, "indexTask.html", context)
@@ -307,14 +310,15 @@ def indexTask(request):
 @allowed_users(allowed_roles=['Admin'])
 def deleteTask(request, delete_id):
     task = Task.objects.filter(id=delete_id)
+    # notification = Notification(
+    #     created_by=request.user,
+    #     given_to=task.given_to,
+    #     title="Task Deleted",
+    #     body="Your Task have been deleted!",
+    # )
+    # notification.save()
     task.delete()
-    notification = Notification(
-        created_by=request.user,
-        given_to=task.given_to,
-        title="Task Deleted",
-        body="Your Task have been deleted!",
-    )
-    notification.save()
+    
     messages.success(
         request, 'Task deleted Successfully!')
     return redirect('employee:indexTask')
@@ -365,6 +369,8 @@ def detailTask(request, task_id):
     subtask = SubTask.objects.filter(belongs_to=task)
     report = TaskReport.objects.filter(task=task)
     reportFeedback = ReportFeedback.objects.filter(report=report)
+    today_date = datetime.date.today()
+
 
     is_hrd = request.user.groups.filter(name='Admin').exists()
 
@@ -373,6 +379,7 @@ def detailTask(request, task_id):
         'task': task,
         'subtask': subtask,
         'reportFeedback': reportFeedback,
+        'today_date':today_date,
     }
     return render(request, "detailTask.html", context)
 
@@ -398,12 +405,14 @@ def userTask(request):
     task_qty = Task.objects.filter(
         given_to=request.user).count()
     is_hrd = request.user.groups.filter(name='Admin').exists()
+    today_date = datetime.date.today()
 
     context = {
         'navbar': is_hrd,
         'task': task,
         'task_qty': task_qty,
         'myFilter': myFilter,
+        'today_date':today_date,
     }
 
     return render(request, "userTask.html", context)
@@ -769,7 +778,6 @@ def addAppFeedback(request):
         if form.is_valid():
             profile = form.save(commit=False)
             profile.created_by = request.user
-            profile.given_to = receiver
             profile.save()
             messages.success(
                 request, 'Success creating new Feedback!')
@@ -1265,16 +1273,23 @@ def deleteFeedbackReply(request, delete_id):
 def generatePerformance(request, profile_id):
     profile = Profile.objects.get(id=profile_id)
     today = datetime.datetime.now()
-    task = Task.objects.filter(given_to=profile.user,created_at__year=today.year, created_at__month=today.month).order_by('-status')
-    alltask = Task.objects.filter(given_to=profile.user, created_at__year=today.year, created_at__month=today.month).count()
-    onprogresstask = Task.objects.filter(given_to=profile.user,status="On Progress",created_at__year=today.year, created_at__month=today.month).count()
-    donetask = Task.objects.filter(given_to=profile.user,status="Approved",created_at__year=today.year, created_at__month=today.month).count()
     
-    meetings = Meeting.objects.filter(division=profile.position,created_at__year=today.year, created_at__month=today.month)
+    month = 12
+    year = 2020
+    
+    #month = today.month
+    #year = today.year
+    
+    task = Task.objects.filter(given_to=profile.user,created_at__year=year, created_at__month=month).order_by('-status')
+    alltask = Task.objects.filter(given_to=profile.user, created_at__year=year, created_at__month=month).count()
+    onprogresstask = Task.objects.filter(given_to=profile.user,status="On Progress",created_at__year=year, created_at__month=month).count()
+    donetask = Task.objects.filter(given_to=profile.user,status="Approved",created_at__year=year, created_at__month=month).count()
+    
+    meetings = Meeting.objects.filter(division=profile.position,created_at__year=year, created_at__month=month)
     meetingsqty = meetings.count()
-    allmeetings = Meeting.objects.filter(division=profile.position,created_at__year=today.year, created_at__month=today.month).count()
-    finishedmeetings = Meeting.objects.filter(division=profile.position,finished=True,created_at__year=today.year, created_at__month=today.month).count()
-    unfinishedmeetings = Meeting.objects.filter(division=profile.position,finished=False,created_at__year=today.year, created_at__month=today.month).count()
+    allmeetings = Meeting.objects.filter(division=profile.position,created_at__year=year, created_at__month=month).count()
+    finishedmeetings = Meeting.objects.filter(division=profile.position,finished=True,created_at__year=year, created_at__month=month).count()
+    unfinishedmeetings = Meeting.objects.filter(division=profile.position,finished=False,created_at__year=year, created_at__month=month).count()
 
     template = get_template('invoice.html')
     context = {
@@ -1309,17 +1324,23 @@ def generatePerformance(request, profile_id):
 def generateMonthReport(request):
     profilecount = Profile.objects.all().count()
     profile = Profile.objects.all().order_by('position')
-
     today = datetime.datetime.now()
-    task = Task.objects.filter(created_at__year=today.year, created_at__month=today.month).order_by('-status')
-    alltask = Task.objects.filter(created_at__year=today.year, created_at__month=today.month).count()
-    onprogresstask = Task.objects.filter(status="On Progress",created_at__year=today.year, created_at__month=today.month).count()
-    donetask = Task.objects.filter(status="Approved",created_at__year=today.year, created_at__month=today.month).count()
+
+    month = 12
+    year = 2020
     
-    meetings = Meeting.objects.filter(created_at__year=today.year, created_at__month=today.month).order_by('created_at')
+    # month = today.month
+    # year = today.year
+
+    task = Task.objects.filter(created_at__year=year, created_at__month=month).order_by('-status')
+    alltask = Task.objects.filter(created_at__year=year, created_at__month=month).count()
+    onprogresstask = Task.objects.filter(status="On Progress",created_at__year=year, created_at__month=month).count()
+    donetask = Task.objects.filter(status="Approved",created_at__year=year, created_at__month=month).count()
+    
+    meetings = Meeting.objects.filter(created_at__year=year, created_at__month=month).order_by('created_at')
     meetingsqty = meetings.count()
-    finishedmeetings = Meeting.objects.filter(finished=True,created_at__year=today.year, created_at__month=today.month).count()
-    unfinishedmeetings = Meeting.objects.filter(finished=False,created_at__year=today.year, created_at__month=today.month).count()
+    finishedmeetings = Meeting.objects.filter(finished=True,created_at__year=year, created_at__month=month).count()
+    unfinishedmeetings = Meeting.objects.filter(finished=False,created_at__year=year, created_at__month=month).count()
 
     template = get_template('invoice.html')
     context = {

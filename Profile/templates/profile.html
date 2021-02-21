@@ -54,7 +54,13 @@ Profile Page
     </div>
     <div class="card text-center bg-light shadow-sm p-3 mb-5 border mr-3" style="width: 18rem;border-radius:25px;">
         <div class="card-body">
+
+            {% if request.user.profile_user.position == "CEO" %}
             <h5 class="card-title">Meetings Hosted</h5>
+            {% else %}
+            <h5 class="card-title">Meetings Available</h5>
+            {% endif %}
+
             <hr>
             <p class="card-text">{{meeting_qty}}</p>
         </div>

@@ -36,6 +36,7 @@
         <p><b>Given By: </b>{{task.created_by}}</p>
         <p><b>For: </b>{{task.given_to}}</p>
         <hr>
+        <p><b>Deadline: </b>{{task.deadline}}</p>
         <p><b>Description: </b>{{task.body}}</p>
 
         <div class="container">
@@ -58,13 +59,22 @@
                         <td>{{subtask.title}}</td>
                         <td>{{subtask.description}}</td>
 
+                        {% if task.deadline < today_date %}
+                        <td class="text-danger">Late</td>
+                        {% else %}
                         {% if subtask.finished == True %}
                         <td class="text-success">Finished</td>
                         {% else %}
                         <td class="text-danger">Not Finished</td>
                         {% endif %}
+                        {% endif %}
+
+
 
                         <td>
+                            {% if task.deadline < today_date %}
+                            <span class="text-danger">DEADLINE MISSED</span>
+                            {% else %}
                             {% if subtask.finished == True %}
 
                             {% if request.user.profile_user.position == "CEO"  %}
@@ -138,6 +148,7 @@
                             </button>
 
                             {% else %}
+
                             {% ifequal task.status "On Progress" %}
                             <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
                                 data-target="#exampleModalCenter{{subtask.id}}">
@@ -194,6 +205,9 @@
                                 </div>
                             </div>
                             {% endif %}
+                            {% endif %}
+
+
                         </td>
                     </tr>
                     {% endfor %}
@@ -230,6 +244,7 @@
         {% if task.attachment %}
         <p><a href="{{task.attachment.url}}">Download Attachment</a></p>
         {% endif %}
+
         <hr>
         <p><b>Created at: {{task.created_at}}</b></p>
     </div>

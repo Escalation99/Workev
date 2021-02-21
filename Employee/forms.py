@@ -1,7 +1,10 @@
 from django.forms import ModelForm
 from django import forms
 from .models import Meeting, Task, TaskReport, ReportFeedback, Attendance, Feedback, FeedbackReply, PaidLeave, TaskReportHistory, SubTask
-from bootstrap_datepicker_plus import DatePickerInput
+
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
 
 class MeetingForm(forms.ModelForm):
@@ -29,6 +32,9 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ('given_to', 'title', 'body', 'attachment', 'deadline')
+        widgets = {
+            'deadline': DateInput()
+        }
 
 
 class SubTaskForm(forms.ModelForm):
@@ -52,7 +58,7 @@ class ReportFeedbackForm(forms.ModelForm):
 class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
-        fields = ('title', 'body')
+        fields = ('given_to', 'title', 'body')
 
 
 class FeedbackReplyForm(forms.ModelForm):

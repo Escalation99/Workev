@@ -43,10 +43,9 @@ def updateProfile(request):
         'last_name': profile.last_name,
         'email': profile.email,
         'address': profile.address,
-        'position': profile.position,
         'profile_pic': profile.profile_pic,
     }
-    form = UserProfileForm(request.POST or None, request.FILES or None,
+    form = EditProfileForm(request.POST or None, request.FILES or None,
                            initial=data, instance=profile)
     if request.method == 'POST':
         if form.is_valid():

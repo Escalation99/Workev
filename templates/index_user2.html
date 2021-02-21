@@ -45,8 +45,11 @@ Index Page
         style="padding:15px;border-top-right-radius:15px;border-bottom-right-radius:15px;background-color:#fff;">
         <h5><i class="fa fa-bookmark mr-2" aria-hidden="true"></i>
             Notification</h5>
+        <hr>
+        {% if notifQty == 0 %}
+        <h5 class="text-danger">You have no Notification</h5>
+        {% else %}
         {% for new_notification in new_notification|dictsortreversed:"created_at" %}
-
         <div class="accordion" id="accordionExample{{new_notification.id}}">
             <div class="card">
                 <div class="card-header bg-white" id="headingOne{{new_notification.id}}">
@@ -93,6 +96,8 @@ Index Page
             </div>
         </div>
         {% endfor %}
+        {% endif %}
+
     </div>
 </div>
 {% endif %}
@@ -266,8 +271,9 @@ Index Page
         style="padding:15px;border-radius:15px;background-color:#FEF7DA;border-right:15px solid #f1f1f1;border-top-right-radius:30px;border-bottom-right-radius:30px;">
         <h5><i class="fa fa-users mr-2" aria-hidden="true"></i>Your Meetings</h5>
         <hr>
-
-
+        {% if meetings_qty == 0 %}
+        <h5 class="text-danger">You have no meetings</h5>
+        {% else %}
         {% for meetings in meetings|dictsortreversed:"created_at" %}
 
         <div class="accordion" id="accordionExample{{meetings.id}}">
@@ -322,10 +328,15 @@ Index Page
             </div>
         </div>
         {% endfor %}
+        {% endif %}
+
     </div>
     <div class="col-sm-6" style="padding:15px;border-radius:15px;background-color:#F0DCFF;">
         <h5><i class="fa fa-comments mr-2" aria-hidden="true"></i>Your Recent Post</h5>
         <hr>
+        {% if post_qty == 0 %}
+        <h5 class="text-danger">You have no post</h5>
+        {% else %}
         {% for post in recent_post|dictsortreversed:"created_at" %}
         <div class="accordion" id="accordionExample{{post.id}}">
             <div class="card">
@@ -352,13 +363,14 @@ Index Page
             </div>
         </div>
         {% endfor %}
+        {% endif %}
+
     </div>
 </div>
 {% if request.user.profile_user.position != "CEO" %}
-<br><br>
+<br><br><br><br>
 {% else %}
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
 {% endif %}
 
 
@@ -366,7 +378,7 @@ Index Page
 
 {% block footer %}
 
-<footer class="page-footer font-small pt-1 bg-dark">
+<footer class="page-footer font-small pt-1 bg-dark" style="margin-top:210px;">
 
     <div class="footer-copyright text-center py-3 text-white">© 2020 Copyright: WorkEv Corporation
     </div>

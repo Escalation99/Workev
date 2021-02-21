@@ -8,3 +8,10 @@ class UserProfileForm(forms.ModelForm):
         model = Profile
         fields = ('first_name', 'last_name', 'email',
                   'address', 'position', 'profile_pic')
+
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('first_name', 'last_name', 'email',
+                  'address', 'profile_pic')

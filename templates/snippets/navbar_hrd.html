@@ -1,3 +1,14 @@
+<style>
+    .dropdown:hover>.dropdown-menu {
+        display: block;
+    }
+
+    .dropdown>.dropdown-toggle:active {
+        /*Without this, clicking will make it sticky*/
+        pointer-events: none;
+    }
+</style>
+
 <nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="">
@@ -19,7 +30,8 @@
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Task</a>
-                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink"
+                        style="margin-top:-7px;">
                         <a href="{% url "employee:indexTask" %}" class="dropdown-item bg-dark"
                             style="color:white">Manage Task</a>
                         <a href="{% url "employee:indexReport" %}" class="dropdown-item bg-dark"
@@ -54,7 +66,8 @@
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Discussion</a>
-                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink"
+                        style="margin-top:-7px;">
                         <a href="{% url "discussion:addDiscussion" %}" class="dropdown-item bg-dark"
                             style="color:white">Create
                             New</a>
@@ -72,11 +85,12 @@
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img style="height:25px;width:25px;background-color:white; border-radius:50%;margin-right:5px;"
                             src="{{request.user.profile_user.profile_pic.url}}" alt=""></a>
-                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                    <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink"
+                        style="margin-top:-7px;">
                         <a href="{% url "profile:index" %}" class="dropdown-item bg-dark" style="color:white">
                             <i class="fa fa-user mr-2" aria-hidden="true"></i>
                             Profile</a>
-                        <a href="{% url "logout" %}" class="dropdown-item bg-dark" style="color:white">
+                        <a href="{% url "logoutPage" %}" class="dropdown-item bg-dark" style="color:white">
                             <i class="fa fa-power-off mr-2" aria-hidden="true"></i>
                             Logout</a>
                     </div>

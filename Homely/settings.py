@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Discussion',
     'Employee',
     'django_filters',
+    'bootstrap_datepicker_plus',
 ]
 
 MIDDLEWARE = [
