@@ -77,6 +77,32 @@
                             Discussions</a>
                     </div>
                 </li>
+
+                <li class="nav-item dropdown">
+                    {% if unread_notification > 98 %}
+                    <span class="badge badge-pill badge-danger badge-sm"
+                        style="float:right;margin-bottom:-10px;">99+</span>
+                    {% endif %}
+                    <span class="badge badge-pill badge-danger badge-sm"
+                        style="float:right;margin-bottom:-10px;">{{unread_notification}}</span>
+                    <a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Notification</a>
+                    <div class="dropdown-menu bg-light" style="margin-top:-7px;"
+                        aria-labelledby="navbarDropdownMenuLink">
+                        {% for notification in unread_notification2 %}
+                        <a class="dropdown-item bg-light text-dark"
+                            style="color:white;border-bottom:1px solid #dedede;">
+                            <b>{{notification.title}}</b>
+                            <br>
+                            {{notification.created_at}}
+                        </a>
+                        {% endfor %}
+                        <a href="{% url "employee:indexNotification" %}"
+                            class="dropdown-item bg-light text-primary mt-2">
+                            Show All Notifications</a>
+                    </div>
+                </li>
+
                 <li class="nav-item">
                     <a href="{% url "employee:indexAppFeedback" %}" class="nav-link">Feedback</a>
                 </li>

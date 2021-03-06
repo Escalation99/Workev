@@ -424,6 +424,12 @@ def acceptTask(request, task_id):
     task = Task.objects.get(id=task_id)
     task.status = "On Progress"
     task.save()
+    notification = Notification(
+        created_by=request.user,
+        given_to=User.objects.get(username='Test_Supervisor'),
+        title="Task have been accepted",
+        body="Employee have accepted the task",
+    )
     messages.success(
         request, 'Task accepted successfully!')
     return redirect('employee:userTask')
@@ -460,6 +466,13 @@ def submitTask(request, task_id):
             profile.save()
             task.status = "Waiting Approval"
             task.save()
+            notification = Notification(
+                created_by=request.user,
+                given_to=User.objects.get(username='Test_Supervisor'),
+                title="New Task Report have been submitted",
+                body="You have a new task report to be checked!",
+            )
+            notification.save()
             messages.success(
                 request, 'Success submit task!')
             return redirect('employee:userTask')
@@ -779,6 +792,13 @@ def addAppFeedback(request):
             profile = form.save(commit=False)
             profile.created_by = request.user
             profile.save()
+            notification = Notification(
+                created_by=request.user,
+                given_to=User.objects.get(username='Test_Supervisor'),
+                title="You have a new feedback",
+                body="Employee just sent a new feedback for you !",
+            )
+            notification.save()
             messages.success(
                 request, 'Success creating new Feedback!')
             return redirect('index')
@@ -845,7 +865,7 @@ def addAppFeedbackReply(request, feedback_id):
 
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['Staff'])
+@allowed_users(allowed_roles=['Staff','Admin'])
 def indexNotification(request):
     notification_list = Notification.objects.order_by('-created_at').filter(
         given_to=request.user)
@@ -869,7 +889,7 @@ def indexNotification(request):
 
 
 @login_required(login_url="login")
-@allowed_users(allowed_roles=['Staff'])
+@allowed_users(allowed_roles=['Staff','Admin'])
 def deleteNotification(request, delete_id):
     is_hrd = request.user.groups.filter(name='Admin').exists()
     notification = Notification.objects.filter(id=delete_id)
